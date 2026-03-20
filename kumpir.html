@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>Kumpir AI</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#07090f; --surface:#0e1118; --surface2:#161b27; --surface3:#1e2535;
+  --border:rgba(255,255,255,0.07);
+  --accent:#3b82f6; --ab:#60a5fa; --a2:#a78bfa; --a3:#34d399; --a4:#f59e0b; --a5:#f472b6;
+  --text:#eef2ff; --text2:#8892aa; --text3:#4a5268;
+}
+.light {
+  --bg:#f0f4ff; --surface:#fff; --surface2:#e8eef8; --surface3:#dde5f5;
+  --border:rgba(0,0,0,0.08); --text:#1a1f36; --text2:#5a6180; --text3:#9aa0b8;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;height:100dvh;overflow:hidden;font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text)}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 55% 40% at 15% 8%,rgba(59,130,246,.08) 0%,transparent 65%),radial-gradient(ellipse 45% 45% at 85% 85%,rgba(167,139,250,.06) 0%,transparent 60%);pointer-events:none;z-index:0}
+
+/* LAYOUT */
+.shell{display:flex;flex-direction:column;height:100%;height:100dvh;position:relative;z-index:1}
+
+/* HEADER */
+header{height:54px;min-height:54px;display:flex;align-items:center;justify-content:space-between;padding:0 14px;border-bottom:1px solid var(--border);background:rgba(7,9,15,.9);backdrop-filter:blur(20px);flex-shrink:0;z-index:100}
+.light header{background:rgba(240,244,255,.95)}
+.hleft{display:flex;align-items:center;gap:9px}
+.menu-btn{width:34px;height:34px;background:none;border:none;cursor:pointer;color:var(--text2);font-size:19px;border-radius:8px;display:flex;align-items:center;justify-content:center;transition:.18s}
+.menu-btn:active{background:var(--surface2)}
+.logo{font-family:'Syne',sans-serif;font-weight:800;font-size:18px;display:flex;align-items:center;gap:8px}
+.logo-icon{width:30px;height:30px;background:linear-gradient(135deg,var(--accent),var(--a2));border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px;box-shadow:0 0 16px rgba(59,130,246,.4)}
+.logo span{background:linear-gradient(135deg,var(--ab),var(--a2));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.status-pill{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--text2);padding:4px 10px;border-radius:20px;background:var(--surface2);border:1px solid var(--border)}
+.sdot{width:6px;height:6px;background:var(--a3);border-radius:50%;animation:pulse 2s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.75)}}
+
+/* BODY */
+.body{display:flex;flex:1;overflow:hidden;position:relative}
+
+/* SIDEBAR */
+.sidebar{width:220px;flex-shrink:0;border-right:1px solid var(--border);background:rgba(7,9,15,.75);backdrop-filter:blur(20px);display:flex;flex-direction:column;padding:12px 10px;gap:3px;overflow-y:auto;transition:transform .26s cubic-bezier(.4,0,.2,1);z-index:50}
+.light .sidebar{background:rgba(240,244,255,.9)}
+.slabel{font-size:9.5px;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;color:var(--text3);padding:8px 10px 5px;font-family:'Syne',sans-serif}
+.sbtn{display:flex;align-items:center;gap:9px;padding:9px 11px;border-radius:10px;border:1px solid transparent;background:transparent;color:var(--text2);cursor:pointer;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;transition:.16s;text-align:left;width:100%;white-space:nowrap}
+.sbtn:hover{background:var(--surface2);color:var(--text);border-color:var(--border)}
+.sbtn.active{background:var(--surface2);border-color:var(--border);color:var(--text)}
+.sbtn.active[data-s="genel"]{border-left:3px solid var(--accent)}
+.sbtn.active[data-s="gorsel"]{border-left:3px solid var(--a3)}
+.sbtn.active[data-s="matematik"]{border-left:3px solid var(--a4)}
+.sbtn.active[data-s="planlama"]{border-left:3px solid var(--a3)}
+.sbtn.active[data-s="kodlama"]{border-left:3px solid var(--a2)}
+.sbtn.active[data-s="hizli"]{border-left:3px solid var(--a5)}
+.sbtn.active[data-s="ayarlar"]{border-left:3px solid var(--text2)}
+.sicon{font-size:15px;width:18px;text-align:center;flex-shrink:0}
+.sfooter{margin-top:auto;padding:10px 10px 4px;border-top:1px solid var(--border);font-size:10.5px;color:var(--text3);text-align:center;line-height:1.6}
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:49;backdrop-filter:blur(2px)}
+.overlay.show{display:block}
+
+/* CHAT */
+.chat-area{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0}
+.sec-header{display:flex;align-items:center;gap:8px;padding:9px 14px;border-bottom:1px solid var(--border);background:rgba(7,9,15,.5);backdrop-filter:blur(10px);flex-shrink:0;min-height:42px}
+.light .sec-header{background:rgba(240,244,255,.75)}
+.badge{display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:30px;font-size:12px;font-weight:700;font-family:'Syne',sans-serif;white-space:nowrap;flex-shrink:0}
+
+/* MESSAGES */
+.messages{flex:1;overflow-y:auto;overflow-x:hidden;padding:14px 12px 8px;display:flex;flex-direction:column;gap:14px;scroll-behavior:smooth;-webkit-overflow-scrolling:touch}
+.messages::-webkit-scrollbar{width:3px}
+.messages::-webkit-scrollbar-thumb{background:var(--surface3);border-radius:4px}
+
+.msg{display:flex;gap:9px;animation:msgIn .28s cubic-bezier(.34,1.4,.64,1);max-width:100%}
+@keyframes msgIn{from{opacity:0;transform:translateY(12px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}
+.msg.user{flex-direction:row-reverse;align-self:flex-end;max-width:88%}
+.msg.ai{max-width:94%}
+.avatar{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;margin-top:2px}
+.msg.ai .avatar{background:linear-gradient(135deg,var(--accent),var(--a2));box-shadow:0 0 12px rgba(59,130,246,.3)}
+.msg.user .avatar{background:var(--surface3);border:1px solid var(--border)}
+.msg-inner{display:flex;flex-direction:column;min-width:0}
+.msg.user .msg-inner{align-items:flex-end}
+.mname{font-size:10px;font-weight:700;letter-spacing:.5px;margin-bottom:4px;font-family:'Syne',sans-serif;text-transform:uppercase}
+.msg.ai .mname{color:var(--ab)}
+.msg.user .mname{color:var(--text3)}
+.bubble{padding:10px 13px;border-radius:14px;font-size:13.5px;line-height:1.65;word-break:break-word;overflow-wrap:anywhere}
+.msg.ai .bubble{background:var(--surface);border:1px solid var(--border);border-radius:4px 14px 14px 14px}
+.msg.user .bubble{background:linear-gradient(135deg,rgba(59,130,246,.2),rgba(167,139,250,.12));border:1px solid rgba(59,130,246,.25);border-radius:14px 4px 14px 14px}
+.bubble pre{background:rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.07);border-radius:9px;padding:10px;margin:7px 0;overflow-x:auto;font-size:12px;line-height:1.55;font-family:'Courier New',monospace;-webkit-overflow-scrolling:touch}
+.bubble code{background:rgba(255,255,255,.08);padding:2px 5px;border-radius:4px;font-family:'Courier New',monospace;font-size:12px}
+.bubble pre code{background:transparent;padding:0}
+.bubble strong{color:var(--ab);font-weight:600}
+.bubble em{color:var(--a2)}
+
+/* Generated image */
+.gen-img{max-width:260px;border-radius:12px;border:1px solid var(--border);margin-top:6px;display:block}
+.img-caption{font-size:11px;color:var(--text3);margin-top:5px}
+
+/* Vision preview */
+.vision-preview{max-width:200px;border-radius:10px;border:1px solid var(--border);margin-bottom:6px;display:block}
+
+/* TYPING */
+.typing-wrap{display:flex;gap:5px;align-items:center;padding:8px 12px}
+.tdot{width:7px;height:7px;border-radius:50%;animation:tb 1.2s ease-in-out infinite}
+.tdot:nth-child(1){background:var(--accent)}
+.tdot:nth-child(2){background:var(--a2);animation-delay:.2s}
+.tdot:nth-child(3){background:var(--a3);animation-delay:.4s}
+@keyframes tb{0%,60%,100%{transform:translateY(0);opacity:.4}30%{transform:translateY(-7px);opacity:1}}
+
+/* WELCOME */
+.welcome{display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1;gap:10px;text-align:center;padding:20px 14px}
+.wicon{font-size:44px;filter:drop-shadow(0 0 18px rgba(59,130,246,.45));animation:float 3.5s ease-in-out infinite}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+.welcome h2{font-family:'Syne',sans-serif;font-size:21px;font-weight:800;background:linear-gradient(135deg,var(--text),var(--text2));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.welcome p{color:var(--text3);font-size:12.5px;max-width:290px;line-height:1.6}
+.chips{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-top:4px;max-width:320px}
+.chip{padding:6px 12px;border-radius:30px;border:1px solid var(--border);background:var(--surface);color:var(--text2);font-size:12px;cursor:pointer;transition:.16s;font-family:'DM Sans',sans-serif;-webkit-user-select:none;user-select:none}
+.chip:active{background:var(--surface2);color:var(--text);border-color:rgba(59,130,246,.35);transform:scale(.96)}
+
+/* INPUT */
+.input-area{padding:9px 11px;background:rgba(7,9,15,.93);backdrop-filter:blur(24px);border-top:1px solid var(--border);flex-shrink:0;padding-bottom:calc(9px + env(safe-area-inset-bottom))}
+.light .input-area{background:rgba(240,244,255,.97)}
+.irow{display:flex;align-items:flex-end;gap:6px;max-width:760px;margin:0 auto}
+.input-box{flex:1;min-width:0;background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:11px 13px;font-family:'DM Sans',sans-serif;font-size:14px;color:var(--text);outline:none;resize:none;min-height:44px;max-height:110px;line-height:1.5;transition:border-color .2s,box-shadow .2s;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.input-box::placeholder{color:var(--text3)}
+.input-box:focus{border-color:rgba(59,130,246,.4);box-shadow:0 0 0 3px rgba(59,130,246,.08)}
+.ibtns{display:flex;gap:5px;flex-shrink:0}
+.ibtn{width:40px;height:40px;border-radius:12px;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;transition:.18s;flex-shrink:0}
+.ibtn:active{transform:scale(.91)}
+.mic-btn{background:var(--surface2);border:1px solid var(--border);color:var(--text2)}
+.mic-btn.on{background:rgba(239,68,68,.15);border-color:rgba(239,68,68,.5);color:#ef4444;animation:mp 1s ease-in-out infinite;box-shadow:0 0 14px rgba(239,68,68,.3)}
+@keyframes mp{0%,100%{transform:scale(1)}50%{transform:scale(1.07)}}
+.img-btn{background:var(--surface2);border:1px solid var(--border);color:var(--text2)}
+.send-btn{background:linear-gradient(135deg,var(--accent),var(--a2));color:#fff;box-shadow:0 3px 12px rgba(59,130,246,.35)}
+.send-btn:disabled{opacity:.3;cursor:not-allowed;transform:none;box-shadow:none}
+.ihint{text-align:center;margin-top:5px;font-size:10.5px;color:var(--text3);display:flex;align-items:center;justify-content:center;gap:8px}
+.vlisten{color:#ef4444;display:none}
+.vlisten.show{display:inline}
+
+/* Image upload preview */
+.img-upload-wrap{display:none;align-items:center;gap:8px;padding:6px 10px;background:var(--surface2);border-radius:10px;margin-bottom:6px;max-width:760px;margin-left:auto;margin-right:auto}
+.img-upload-wrap.show{display:flex}
+.img-thumb{width:40px;height:40px;border-radius:7px;object-fit:cover;border:1px solid var(--border)}
+.img-upload-label{font-size:12px;color:var(--text2);flex:1}
+.img-upload-clear{background:none;border:none;color:var(--text3);cursor:pointer;font-size:16px;padding:2px 6px}
+
+/* SETTINGS */
+.settings-panel{flex:1;overflow-y:auto;padding:14px 12px;display:flex;flex-direction:column;gap:16px;-webkit-overflow-scrolling:touch}
+.ss{background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden}
+.ss-title{padding:11px 15px 9px;font-family:'Syne',sans-serif;font-size:11px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--text3);border-bottom:1px solid var(--border)}
+.srow{display:flex;align-items:center;justify-content:space-between;padding:12px 15px;border-bottom:1px solid var(--border);gap:12px}
+.srow:last-child{border-bottom:none}
+.slbl{font-size:13.5px;font-weight:500}
+.ssub{font-size:11.5px;color:var(--text3);margin-top:2px}
+.toggle{width:44px;height:24px;border-radius:12px;background:var(--surface3);border:none;cursor:pointer;position:relative;flex-shrink:0;transition:background .2s}
+.toggle::after{content:'';position:absolute;width:18px;height:18px;border-radius:50%;background:#fff;top:3px;left:3px;transition:transform .2s;box-shadow:0 1px 4px rgba(0,0,0,.3)}
+.toggle.on{background:var(--accent)}
+.toggle.on::after{transform:translateX(20px)}
+.style-opts{display:flex;flex-direction:column;gap:2px;padding:6px 9px 9px}
+.sopt{display:flex;align-items:center;gap:10px;padding:8px 9px;border-radius:9px;cursor:pointer;transition:.15s;border:1px solid transparent}
+.sopt:hover{background:var(--surface2)}
+.sopt.sel{background:var(--surface2);border-color:rgba(59,130,246,.3)}
+.sopt-icon{font-size:18px;width:22px;text-align:center;flex-shrink:0}
+.sopt-text{flex:1}
+.sopt-name{font-size:13px;font-weight:600}
+.sopt-desc{font-size:11.5px;color:var(--text3);margin-top:1px}
+.scheck{width:18px;height:18px;border-radius:50%;background:var(--accent);display:none;align-items:center;justify-content:center;font-size:10px;color:#fff;flex-shrink:0}
+.sopt.sel .scheck{display:flex}
+
+/* RESPONSIVE */
+@media(max-width:640px){
+  .sidebar{position:fixed;top:0;left:0;bottom:0;width:250px;transform:translateX(-100%);z-index:200;padding-top:62px;padding-bottom:env(safe-area-inset-bottom)}
+  .sidebar.open{transform:translateX(0);box-shadow:4px 0 24px rgba(0,0,0,.4)}
+  .status-label{display:none}
+}
+@media(min-width:641px){
+  .menu-btn{display:none}
+}
+@media(max-width:360px){
+  .logo{font-size:16px}
+  .bubble{font-size:13px;padding:9px 11px}
+  .input-box{font-size:13px}
+}
+</style>
+</head>
+<body>
+<div class="shell">
+  <header>
+    <div class="hleft">
+      <button class="menu-btn" onclick="toggleSidebar()">☰</button>
+      <div class="logo">
+        <div class="logo-icon">🥔</div>
+        Kumpir <span>AI</span>
+      </div>
+    </div>
+    <div class="status-pill">
+      <div class="sdot"></div>
+      <span class="status-label">Çevrimiçi</span>
+    </div>
+  </header>
+
+  <div class="body">
+    <div class="overlay" id="overlay" onclick="closeSidebar()"></div>
+
+    <aside class="sidebar" id="sidebar">
+      <div class="slabel">Bölümler</div>
+      <button class="sbtn active" data-s="genel" onclick="sw(this)"><span class="sicon">🌐</span>Genel Sohbet</button>
+      <button class="sbtn" data-s="gorsel" onclick="sw(this)"><span class="sicon">🎨</span>Görsel Oluştur</button>
+      <button class="sbtn" data-s="matematik" onclick="sw(this)"><span class="sicon">🧮</span>Matematik</button>
+      <button class="sbtn" data-s="planlama" onclick="sw(this)"><span class="sicon">🗂️</span>Planlı Düşünme</button>
+      <button class="sbtn" data-s="kodlama" onclick="sw(this)"><span class="sicon">💻</span>Kodlama</button>
+      <button class="sbtn" data-s="hizli" onclick="sw(this)"><span class="sicon">⚡</span>Hızlı Düşünme</button>
+      <div class="slabel" style="margin-top:8px">Diğer</div>
+      <button class="sbtn" data-s="ayarlar" onclick="sw(this)"><span class="sicon">⚙️</span>Ayarlar</button>
+      <div class="sfooter">🥔 Kumpir her şeyi bilir</div>
+    </aside>
+
+    <div class="chat-area">
+      <div class="sec-header">
+        <div class="badge" id="badge" style="background:rgba(59,130,246,.1);border:1px solid rgba(59,130,246,.25);color:#60a5fa">🌐 Genel Sohbet</div>
+      </div>
+
+      <div class="messages" id="messages">
+        <div class="welcome" id="welcome">
+          <div class="wicon">🥔</div>
+          <h2>Merhaba! Ben Kumpir.</h2>
+          <p>Her şeyi bilen yapay zeka asistanın. Bölüm seç veya hemen sor!</p>
+          <div class="chips">
+            <div class="chip" onclick="sendChip(this)">Selam!</div>
+            <div class="chip" onclick="sendChip(this)">Kim yaptı seni?</div>
+            <div class="chip" onclick="sendChip(this)">Araba fotoğrafı oluştur</div>
+            <div class="chip" onclick="sendChip(this)">15 × 27 = ?</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Image upload preview -->
+      <div class="img-upload-wrap" id="imgUploadWrap">
+        <img class="img-thumb" id="imgThumb" src="" alt="">
+        <span class="img-upload-label">Görsel yüklendi, sorunuzu yazın</span>
+        <button class="img-upload-clear" onclick="clearImage()">✕</button>
+      </div>
+
+      <div class="input-area" id="inputArea">
+        <div class="irow">
+          <textarea class="input-box" id="inputBox" placeholder="Kumpir'e sor..." rows="1" onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
+          <div class="ibtns">
+            <button class="ibtn img-btn" onclick="document.getElementById('fileInput').click()" title="Görsel yükle">📎</button>
+            <button class="ibtn mic-btn" id="micBtn" onclick="toggleVoice()">🎤</button>
+            <button class="ibtn send-btn" id="sendBtn" onclick="sendMessage()">➤</button>
+          </div>
+        </div>
+        <div class="ihint">
+          <span>Enter gönder · Shift+Enter satır</span>
+          <span class="vlisten" id="vStatus">🔴 Dinleniyor...</span>
+        </div>
+      </div>
+      <input type="file" id="fileInput" accept="image/*" style="display:none" onchange="handleImageUpload(event)">
+    </div>
+  </div>
+</div>
+
+<script>
+// ── SETTINGS ──
+let CFG = { theme:'dark', style:'normal' };
+try { const s=localStorage.getItem('kumpir_cfg'); if(s) CFG={...CFG,...JSON.parse(s)}; } catch(e){}
+
+const applyTheme = () => document.body.classList.toggle('light', CFG.theme==='light');
+applyTheme();
+
+const saveCFG = () => { try { localStorage.setItem('kumpir_cfg', JSON.stringify(CFG)); } catch(e){} };
+
+const STYLES = {
+  normal:  { name:'Normal',     icon:'😊', desc:'Dengeli ve samimi',      p:'Cevaplarını kısa ve öz tut. Maksimum 3-4 cümle. Direkt ve samimi ol.' },
+  expert:  { name:'Uzman',      icon:'🎓', desc:'Detaylı ve bilimsel',     p:'Detaylı açıklamalar yap ama gereksiz uzatma. Örnekler kullan.' },
+  casual:  { name:'Rahat',      icon:'😎', desc:'Arkadaşça ve eğlenceli',  p:'Çok kısa ve arkadaşça cevap ver. Espri yap. 1-2 cümle yeter.' },
+  concise: { name:'Özlü',       icon:'⚡', desc:'Sadece özet bilgi',        p:'Tek cümleyle cevap ver. Daha fazla yazma.' },
+  teacher: { name:'Öğretmen',   icon:'📚', desc:'Adım adım açıklayan',     p:'Adım adım, örneklerle açıkla. Ama özlü tut.' },
+  funny:   { name:'Eğlenceli',  icon:'😂', desc:'Espritüel ve neşeli',     p:'Komik ve eğlenceli ol. Kısa tut ama mutlaka şaka ekle.' }
+};
+
+// ── SECTIONS ──
+const SECS = {
+  genel: {
+    label:'🌐 Genel Sohbet', bg:'rgba(59,130,246,.1)', br:'rgba(59,130,246,.25)', c:'#60a5fa',
+    chips:['Selam!','Kim yaptı seni?','İlginç bir bilgi ver','Türkiye hakkında ne biliyorsun?'],
+    sys:()=>`Sen Kumpir adında zeki ve samimi bir yapay zeka asistanısın. Enes tarafından yaratıldın.
+MUTLAKA Türkçe konuş. Başka dil kullanma. Arapça, İngilizce veya başka dilde asla yazma.
+Her konuda bilgin var: tarih, bilim, teknoloji, kültür, spor, müzik vb.
+"Bilmiyorum" veya "yapamam" deme. Kim yaptı/oluşturdu/yarattı sorusuna: "Ben Kumpir AI'yım, Enes tarafından oluşturuldum." de.
+${STYLES[CFG.style].p}`
+  },
+  gorsel: {
+    label:'🎨 Görsel Oluştur', bg:'rgba(52,211,153,.1)', br:'rgba(52,211,153,.25)', c:'#34d399',
+    chips:['Araba fotoğrafı oluştur','Uzay manzarası yap','Kedi çizimi oluştur','Orman görseli'],
+    sys:()=>`Sen Kumpir'in Görsel bölümüsün. Kullanıcı görsel istiyor.
+MUTLAKA Türkçe konuş. Başka dil kullanma.
+Görsel üretirken kısa bir Türkçe açıklama yaz: "Görseliniz hazırlanıyor..." veya "İşte istediğiniz görsel:" gibi.
+Görseli oluştururken SADECE şu formatı kullan: [GORSEL:açıklama]
+Örnek: Araba istendi → "İşte araba görseliniz! [GORSEL:modern spor araba kırmızı renkli]"
+Görsel dışı soru: "Bu bölüm görsel oluşturma içindir." de.`
+  },
+  matematik: {
+    label:'🧮 Matematik', bg:'rgba(245,158,11,.1)', br:'rgba(245,158,11,.3)', c:'#f59e0b',
+    chips:['15 × 27 = ?','x² + 5x + 6 = 0','Dairenin alanı?','Türev nedir?'],
+    sys:()=>`Sen Kumpir'in Matematik bölümüsün. MUTLAKA Türkçe konuş. Başka dil kullanma.
+SADECE matematik sorularına cevap ver. Adım adım çöz.
+Matematik dışı soru: "Bu bölüm sadece matematik içindir." de.`
+  },
+  planlama: {
+    label:'🗂️ Planlı Düşünme', bg:'rgba(52,211,153,.1)', br:'rgba(52,211,153,.25)', c:'#34d399',
+    chips:['Uygulama yapmak istiyorum','Sınava hazırlık planı','Kilo vermek istiyorum','İş kurma planı'],
+    sys:()=>`Sen Kumpir'in Planlama bölümüsün. MUTLAKA Türkçe konuş. Başka dil kullanma.
+Görev verilince: hedef → aşamalar → adımlar → zaman → riskler şeklinde planla.
+Sadece planlama konularında cevap ver. ${STYLES[CFG.style].p}`
+  },
+  kodlama: {
+    label:'💻 Kodlama', bg:'rgba(167,139,250,.1)', br:'rgba(167,139,250,.25)', c:'#a78bfa',
+    chips:['Python for döngüsü','Hata düzelt','React component','SQL JOIN'],
+    sys:()=>`Sen Kumpir'in Kodlama bölümüsün. MUTLAKA Türkçe konuş. Açıklamalar Türkçe olsun, kodlar İngilizce olabilir.
+Kod yaz, hataları düzelt, açıkla. Kod bloklarını backtick ile formatla.
+Sadece kodlama konularında cevap ver.`
+  },
+  hizli: {
+    label:'⚡ Hızlı Düşünme', bg:'rgba(244,114,182,.1)', br:'rgba(244,114,182,.25)', c:'#f472b6',
+    chips:['En büyük ülke?','Pi sayısı?','Türkiye nüfusu?','1 mil kaç km?'],
+    sys:()=>`Sen Kumpir'in Hızlı Düşünme bölümüsün. MUTLAKA Türkçe konuş.
+KURAL: Maksimum 1-2 cümle. Giriş yok. Direkt cevap.`
+  }
+};
+
+let cur = 'genel';
+let hist = {};
+let loading = false;
+let recog = null;
+let listening = false;
+let uploadedImage = null; // {base64, mimeType, dataUrl}
+
+Object.keys(SECS).forEach(s => hist[s]=[]);
+
+// ── SIDEBAR ──
+function toggleSidebar(){ document.getElementById('sidebar').classList.toggle('open'); document.getElementById('overlay').classList.toggle('show'); }
+function closeSidebar(){ document.getElementById('sidebar').classList.remove('open'); document.getElementById('overlay').classList.remove('show'); }
+
+// ── SECTION SWITCH ──
+function sw(btn){
+  document.querySelectorAll('.sbtn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  cur = btn.dataset.s;
+  closeSidebar();
+
+  const msgs = document.getElementById('messages');
+  const inputArea = document.getElementById('inputArea');
+  const imgWrap = document.getElementById('imgUploadWrap');
+
+  if(cur==='ayarlar'){
+    document.getElementById('badge').textContent='⚙️ Ayarlar';
+    document.getElementById('badge').style.cssText='background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:var(--text2);display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:30px;font-size:12px;font-weight:700;font-family:Syne,sans-serif;';
+    msgs.innerHTML = buildSettings();
+    inputArea.style.display='none';
+    imgWrap.classList.remove('show');
+    return;
+  }
+
+  inputArea.style.display='';
+  const sec = SECS[cur];
+  const b = document.getElementById('badge');
+  b.textContent=sec.label;
+  b.style.cssText=`background:${sec.bg};border:1px solid ${sec.br};color:${sec.c};display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:30px;font-size:12px;font-weight:700;font-family:Syne,sans-serif;`;
+
+  msgs.innerHTML='';
+  const h=hist[cur];
+  if(h.length===0){
+    const em=sec.label.split(' ')[0];
+    msgs.innerHTML=`<div class="welcome" id="welcome">
+      <div class="wicon">${em}</div>
+      <h2>${sec.label.split(' ').slice(1).join(' ')}</h2>
+      <p style="color:var(--text3);font-size:12.5px;max-width:290px;line-height:1.6">Bu bölümde soru sorabilirsin!</p>
+      <div class="chips">${sec.chips.map(c=>`<div class="chip" onclick="sendChip(this)">${c}</div>`).join('')}</div>
+    </div>`;
+  } else {
+    h.forEach(m=>renderMsg(m.role==='user'?'user':'ai', m.content, m.imageUrl));
+    document.getElementById('messages').scrollTop=99999;
+  }
+}
+
+// ── RENDER ──
+function renderMsg(type, text, imageUrl){
+  const w=document.getElementById('welcome'); if(w)w.remove();
+  const msgs=document.getElementById('messages');
+  const div=document.createElement('div');
+  div.className=`msg ${type}`;
+
+  let extra = '';
+  if(imageUrl){
+    extra=`<img src="${imageUrl}" class="gen-img" alt="Oluşturulan görsel" onerror="this.style.display='none'"><div class="img-caption">🎨 Oluşturulan görsel</div>`;
+  }
+
+  div.innerHTML=`
+    <div class="avatar">${type==='ai'?'🥔':'👤'}</div>
+    <div class="msg-inner">
+      <div class="mname">${type==='ai'?'Kumpir AI':'Sen'}</div>
+      <div class="bubble">${extra}${formatText(text)}</div>
+    </div>`;
+  msgs.appendChild(div);
+  msgs.scrollTop=99999;
+}
+
+function formatText(t){
+  t=t.replace(/```(\w*)\n?([\s\S]*?)```/g,(_,l,c)=>`<pre><code>${esc(c.trim())}</code></pre>`);
+  t=t.replace(/`([^`\n]+)`/g,'<code>$1</code>');
+  t=t.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>');
+  t=t.replace(/\*(.*?)\*/g,'<em>$1</em>');
+  t=t.replace(/\n/g,'<br>');
+  return t;
+}
+function esc(t){ return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+// ── TYPING ──
+function showTyping(){
+  const msgs=document.getElementById('messages');
+  const d=document.createElement('div'); d.className='msg ai'; d.id='typing';
+  d.innerHTML=`<div class="avatar">🥔</div><div class="msg-inner"><div class="mname">Kumpir AI</div><div class="bubble"><div class="typing-wrap"><div class="tdot"></div><div class="tdot"></div><div class="tdot"></div></div></div></div>`;
+  msgs.appendChild(d); msgs.scrollTop=99999;
+}
+function removeTyping(){ const t=document.getElementById('typing'); if(t)t.remove(); }
+
+// ── IMAGE UPLOAD ──
+function handleImageUpload(e){
+  const file=e.target.files[0]; if(!file)return;
+  const reader=new FileReader();
+  reader.onload=ev=>{
+    const dataUrl=ev.target.result;
+    const base64=dataUrl.split(',')[1];
+    uploadedImage={base64, mimeType:file.type, dataUrl};
+    document.getElementById('imgThumb').src=dataUrl;
+    document.getElementById('imgUploadWrap').classList.add('show');
+  };
+  reader.readAsDataURL(file);
+  e.target.value='';
+}
+
+function clearImage(){
+  uploadedImage=null;
+  document.getElementById('imgThumb').src='';
+  document.getElementById('imgUploadWrap').classList.remove('show');
+}
+
+// ── SEND ──
+async function sendMessage(){
+  if(loading || cur==='ayarlar') return;
+  const input=document.getElementById('inputBox');
+  const text=input.value.trim();
+  const hasImage=!!uploadedImage;
+
+  if(!text && !hasImage) return;
+
+  input.value=''; input.style.height='auto';
+  loading=true;
+  document.getElementById('sendBtn').disabled=true;
+
+  const userText=text||(hasImage?'Bu görseli yorumla':'');
+  renderMsg('user', userText);
+
+  // Handle vision (uploaded image)
+  if(hasImage){
+    const imgData={...uploadedImage};
+    clearImage();
+    hist[cur].push({role:'user', content:userText});
+    showTyping();
+    try{
+      const res=await fetch('/api/vision',{
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({imageBase64:imgData.base64, mimeType:imgData.mimeType, question:userText||'Bu görseli Türkçe olarak detaylıca açıkla.', system:`Sen Kumpir adında bir yapay zeka asistanısın. MUTLAKA Türkçe konuş. Görseli analiz et ve Türkçe açıkla.`})
+      });
+      const data=await res.json();
+      removeTyping();
+      const reply=data.content?.[0]?.text||'Görseli analiz edemedim.';
+      hist[cur].push({role:'ai', content:reply});
+      renderMsg('ai', reply);
+    }catch(err){
+      removeTyping();
+      renderMsg('ai','Görsel analiz hatası: '+err.message);
+    }
+    loading=false;
+    document.getElementById('sendBtn').disabled=false;
+    return;
+  }
+
+  // Handle image generation section
+  if(cur==='gorsel'){
+    hist[cur].push({role:'user', content:text});
+    showTyping();
+    try{
+      const res=await fetch('/api/image',{
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({prompt:text})
+      });
+      const data=await res.json();
+      removeTyping();
+      if(data.imageUrl){
+        const reply='İşte oluşturduğum görsel!';
+        hist[cur].push({role:'ai', content:reply, imageUrl:data.imageUrl});
+        renderMsg('ai', reply, data.imageUrl);
+      } else {
+        renderMsg('ai','Görsel oluşturulamadı. Tekrar dene!');
+      }
+    }catch(err){
+      removeTyping();
+      renderMsg('ai','Görsel hatası: '+err.message);
+    }
+    loading=false;
+    document.getElementById('sendBtn').disabled=false;
+    return;
+  }
+
+  // Check if message contains image generation request
+  const imgKeywords=['fotoğraf','görsel','resim','çizim','oluştur','yap','çiz','üret'];
+  const isImgRequest=imgKeywords.some(k=>text.toLowerCase().includes(k)) && 
+    ['araba','kedi','köpek','ev','ağaç','dağ','deniz','uzay','insan','hayvan','manzara','çiçek','şehir','robot','ejderha'].some(k=>text.toLowerCase().includes(k));
+
+  if(isImgRequest && cur==='genel'){
+    hist[cur].push({role:'user', content:text});
+    showTyping();
+    try{
+      const res=await fetch('/api/image',{
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({prompt:text})
+      });
+      const data=await res.json();
+      removeTyping();
+      if(data.imageUrl){
+        const reply='İşte senin için oluşturduğum görsel!';
+        hist[cur].push({role:'ai', content:reply, imageUrl:data.imageUrl});
+        renderMsg('ai', reply, data.imageUrl);
+      } else {
+        renderMsg('ai','Görsel oluşturulamadı.');
+      }
+    }catch(err){
+      removeTyping();
+      renderMsg('ai','Görsel hatası: '+err.message);
+    }
+    loading=false;
+    document.getElementById('sendBtn').disabled=false;
+    return;
+  }
+
+  // Normal chat
+  hist[cur].push({role:'user', content:text});
+  showTyping();
+
+  const sec=SECS[cur];
+  try{
+    const apiMsgs=hist[cur].slice(-12).map(m=>({
+      role:m.role==='ai'?'assistant':'user', content:m.content
+    }));
+    const res=await fetch('/api/chat',{
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({model:'x',max_tokens:600, system:sec.sys(), messages:apiMsgs})
+    });
+    const data=await res.json();
+    removeTyping();
+    const reply=data.content?.[0]?.text||(data.error?`Hata: ${data.error.message}`:'Bir sorun oluştu.');
+    hist[cur].push({role:'ai', content:reply});
+    renderMsg('ai', reply);
+  }catch(err){
+    removeTyping();
+    renderMsg('ai','Bağlantı hatası: '+err.message);
+  }
+
+  loading=false;
+  document.getElementById('sendBtn').disabled=false;
+}
+
+// ── VOICE ──
+function toggleVoice(){
+  if(!('webkitSpeechRecognition' in window)&&!('SpeechRecognition' in window)){alert('Sesli giriş için Chrome kullan!');return;}
+  if(listening){recog?.stop();return;}
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  recog=new SR(); recog.lang='tr-TR'; recog.continuous=false; recog.interimResults=true;
+  recog.onstart=()=>{ listening=true; document.getElementById('micBtn').classList.add('on'); document.getElementById('micBtn').textContent='⏹️'; document.getElementById('vStatus').classList.add('show'); };
+  recog.onresult=e=>{ const t=Array.from(e.results).map(r=>r[0].transcript).join(''); document.getElementById('inputBox').value=t; autoResize(document.getElementById('inputBox')); };
+  recog.onend=()=>{ listening=false; document.getElementById('micBtn').classList.remove('on'); document.getElementById('micBtn').textContent='🎤'; document.getElementById('vStatus').classList.remove('show'); const v=document.getElementById('inputBox').value.trim(); if(v)sendMessage(); };
+  recog.onerror=()=>{ listening=false; document.getElementById('micBtn').classList.remove('on'); document.getElementById('micBtn').textContent='🎤'; document.getElementById('vStatus').classList.remove('show'); };
+  recog.start();
+}
+
+// ── SETTINGS ──
+function buildSettings(){
+  return `<div class="settings-panel">
+    <div class="ss">
+      <div class="ss-title">Görünüm</div>
+      <div class="srow">
+        <div><div class="slbl">🌙 Koyu Tema</div><div class="ssub">Gözleri yormayan koyu arka plan</div></div>
+        <button class="toggle ${CFG.theme==='dark'?'on':''}" id="themeToggle" onclick="toggleTheme()"></button>
+      </div>
+    </div>
+    <div class="ss">
+      <div class="ss-title">Kumpir'in Konuşma Tarzı</div>
+      <div class="style-opts">
+        ${Object.entries(STYLES).map(([k,s])=>`
+          <div class="sopt ${CFG.style===k?'sel':''}" onclick="selStyle('${k}',this)">
+            <div class="sopt-icon">${s.icon}</div>
+            <div class="sopt-text"><div class="sopt-name">${s.name}</div><div class="sopt-desc">${s.desc}</div></div>
+            <div class="scheck">✓</div>
+          </div>`).join('')}
+      </div>
+    </div>
+    <div class="ss">
+      <div class="ss-title">Hakkında</div>
+      <div class="srow"><div><div class="slbl">🥔 Kumpir AI</div><div class="ssub">Enes tarafından oluşturuldu</div></div></div>
+      <div class="srow"><div><div class="slbl">🔧 Versiyon</div><div class="ssub">2.0 — Görsel, Ses, Çoklu Bölüm</div></div></div>
+    </div>
+  </div>`;
+}
+
+function toggleTheme(){
+  CFG.theme=CFG.theme==='dark'?'light':'dark'; saveCFG(); applyTheme();
+  const t=document.getElementById('themeToggle'); if(t) t.classList.toggle('on',CFG.theme==='dark');
+}
+
+function selStyle(k, el){
+  CFG.style=k; saveCFG();
+  document.querySelectorAll('.sopt').forEach(e=>e.classList.remove('sel'));
+  el.classList.add('sel');
+}
+
+function sendChip(el){ document.getElementById('inputBox').value=el.textContent; sendMessage(); }
+function handleKey(e){ if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMessage();} }
+function autoResize(el){ el.style.height='auto'; el.style.height=Math.min(el.scrollHeight,110)+'px'; }
+</script>
+</body>
+</html>
