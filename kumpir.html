@@ -393,7 +393,8 @@ function renderMsg(type, text, imageUrl){
 
   let extra = '';
   if(imageUrl){
-    extra=`<img src="${imageUrl}" class="gen-img" alt="Oluşturulan görsel" onerror="this.style.display='none'"><div class="img-caption">🎨 Oluşturulan görsel</div>`;
+    const imgId='img'+Date.now();
+    extra=`<div id="${imgId}_load" style="color:var(--text3);font-size:12px;padding:4px 0">⏳ Görsel yükleniyor...</div><img id="${imgId}" src="${imageUrl}" class="gen-img" style="display:none" alt="Oluşturulan görsel" onload="this.style.display='block';document.getElementById('${imgId}_load').style.display='none';document.getElementById('messages').scrollTop=99999" onerror="this.style.display='none';document.getElementById('${imgId}_load').textContent='❌ Görsel yüklenemedi, tekrar dene.'"><div class="img-caption">🎨 Oluşturulan görsel</div>`;
   }
 
   div.innerHTML=`
