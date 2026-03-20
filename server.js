@@ -114,7 +114,7 @@ const server = http.createServer((req, res) => {
           const englishPrompt = (data?.choices?.[0]?.message?.content?.trim() || prompt)
             .replace(/['"]/g, '');
           const encoded = encodeURIComponent(englishPrompt + ", digital art, high quality, detailed, vibrant colors");
-          const imageUrl = `https://image.pollinations.ai/prompt/${encoded}?width=512&height=512&nologo=true&seed=${Date.now()}`;
+          const imageUrl = `https://image.pollinations.ai/prompt/${encoded}?width=768&height=768&nologo=true&nofeed=true&seed=${Math.floor(Math.random()*999999)}&model=flux`;
 
           res.writeHead(200, { "Content-Type": "application/json" });
           res.end(JSON.stringify({ imageUrl, prompt: englishPrompt }));
