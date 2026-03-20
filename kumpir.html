@@ -488,24 +488,34 @@ async function sendMessage(){
     return;
   }
 
-  // Handle image generation section
-  if(cur==='gorsel'){
+  // Handle image generation - direct from frontend
+  const isGorsel = cur==='gorsel';
+  const imgKeywords=['fotoğraf','görsel','resim','çizim','oluştur','yap','çiz','üret'];
+  const imgObjects=['araba','kedi','köpek','ev','ağaç','dağ','deniz','uzay','insan','hayvan','manzara','çiçek','şehir','robot','ejderha','at','kuş','orman','göl','şelale'];
+  const isImgRequest=(isGorsel) || (imgKeywords.some(k=>text.toLowerCase().includes(k)) && imgObjects.some(k=>text.toLowerCase().includes(k)));
+
+  if(isImgRequest){
     hist[cur].push({role:'user', content:text});
     showTyping();
     try{
-      const res=await fetch('/api/image',{
+      // Translate to English via Groq
+      const transRes=await fetch('/api/chat',{
         method:'POST', headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({prompt:text})
+        body:JSON.stringify({
+          max_tokens:60,
+          system:'Translate the following to English for image generation. Return ONLY the English prompt, nothing else, no punctuation at end.',
+          messages:[{role:'user',content:text}]
+        })
       });
-      const data=await res.json();
+      const transData=await transRes.json();
+      const engPrompt=((transData.content?.[0]?.text)||text).trim().replace(/['".,!?]/g,'').substring(0,200);
+      const encoded=encodeURIComponent(engPrompt+', digital art, vibrant colors, high quality illustration, detailed');
+      const seed=Math.floor(Math.random()*99999);
+      const imageUrl='https://image.pollinations.ai/prompt/'+encoded+'?width=512&height=512&nologo=true&seed='+seed;
       removeTyping();
-      if(data.imageUrl){
-        const reply='İşte oluşturduğum görsel!';
-        hist[cur].push({role:'ai', content:reply, imageUrl:data.imageUrl});
-        renderMsg('ai', reply, data.imageUrl);
-      } else {
-        renderMsg('ai','Görsel oluşturulamadı. Tekrar dene!');
-      }
+      const reply='🎨 Görsel hazırlanıyor... (10-20 saniye bekle)';
+      hist[cur].push({role:'ai', content:reply, imageUrl:imageUrl});
+      renderMsg('ai', reply, imageUrl);
     }catch(err){
       removeTyping();
       renderMsg('ai','Görsel hatası: '+err.message);
@@ -515,32 +525,8 @@ async function sendMessage(){
     return;
   }
 
-  // Check if message contains image generation request
-  const imgKeywords=['fotoğraf','görsel','resim','çizim','oluştur','yap','çiz','üret'];
-  const isImgRequest=imgKeywords.some(k=>text.toLowerCase().includes(k)) && 
-    ['araba','kedi','köpek','ev','ağaç','dağ','deniz','uzay','insan','hayvan','manzara','çiçek','şehir','robot','ejderha'].some(k=>text.toLowerCase().includes(k));
-
-  if(isImgRequest && cur==='genel'){
-    hist[cur].push({role:'user', content:text});
-    showTyping();
-    try{
-      const res=await fetch('/api/image',{
-        method:'POST', headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({prompt:text})
-      });
-      const data=await res.json();
-      removeTyping();
-      if(data.imageUrl){
-        const reply='İşte senin için oluşturduğum görsel!';
-        hist[cur].push({role:'ai', content:reply, imageUrl:data.imageUrl});
-        renderMsg('ai', reply, data.imageUrl);
-      } else {
-        renderMsg('ai','Görsel oluşturulamadı.');
-      }
-    }catch(err){
-      removeTyping();
-      renderMsg('ai','Görsel hatası: '+err.message);
-    }
+  // dummy placeholder so next if block works
+  if(false){
     loading=false;
     document.getElementById('sendBtn').disabled=false;
     return;
