@@ -206,6 +206,7 @@ header{height:54px;min-height:54px;display:flex;align-items:center;justify-conte
       <div class="slabel">Bölümler</div>
       <button class="sbtn active" data-s="genel" onclick="sw(this)"><span class="sicon">🌐</span>Genel Sohbet</button>
       <button class="sbtn" data-s="gorsel" onclick="sw(this)"><span class="sicon">🎨</span>Görsel Oluştur</button>
+      <button class="sbtn" data-s="dil" onclick="sw(this)"><span class="sicon">🌍</span>Dil & Çeviri</button>
       <button class="sbtn" data-s="matematik" onclick="sw(this)"><span class="sicon">🧮</span>Matematik</button>
       <button class="sbtn" data-s="planlama" onclick="sw(this)"><span class="sicon">🗂️</span>Planlı Düşünme</button>
       <button class="sbtn" data-s="kodlama" onclick="sw(this)"><span class="sicon">💻</span>Kodlama</button>
@@ -283,49 +284,54 @@ const STYLES = {
 const SECS = {
   genel: {
     label:'🌐 Genel Sohbet', bg:'rgba(59,130,246,.1)', br:'rgba(59,130,246,.25)', c:'#60a5fa',
-    chips:['Selam!','Kim yaptı seni?','İlginç bir bilgi ver','Türkiye hakkında ne biliyorsun?'],
-    sys:()=>`Sen Kumpir adında zeki ve samimi bir yapay zeka asistanısın. Enes tarafından yaratıldın.
-MUTLAKA Türkçe konuş. Başka dil kullanma. Arapça, İngilizce veya başka dilde asla yazma.
-Her konuda bilgin var: tarih, bilim, teknoloji, kültür, spor, müzik vb.
-"Bilmiyorum" veya "yapamam" deme. Kim yaptı/oluşturdu/yarattı sorusuna: "Ben Kumpir AI'yım, Enes tarafından oluşturuldum." de.
-${STYLES[CFG.style].p}`
+    chips:['Selam! Nasılsın?','Bana bir fıkra anlat','İlginç bir bilgi ver','Ne konuşalım?'],
+    sys:()=>`Sen Kumpir adında sıcakkanlı, espritüel ve akıcı sohbet eden bir yapay zeka asistanısın.
+KURAL 1: SADECE TÜRKÇE konuş. Tek bir yabancı kelime bile kullanma. İngilizce, Arapça veya başka dil YASAK.
+KURAL 2: Kim seni yaptı / kim oluşturdu / kimin eserisin gibi sorular gelirse sadece o zaman "Enes tarafından oluşturuldum." de. Başka hiçbir mesajda bunu söyleme.
+KURAL 3: Sohbet et! Kullanıcı "selam" derse "Selam! Nasılsın?" gibi samimi karşılık ver. Akıcı diyalog kur.
+KURAL 4: ${STYLES[CFG.style].p}
+Her konuda bilgin var. Bilgili ama aynı zamanda arkadaş gibi konuş.`
   },
   gorsel: {
-    label:'🎨 Görsel Oluştur', bg:'rgba(52,211,153,.1)', br:'rgba(52,211,153,.25)', c:'#34d399',
+    label:'🎨 Görsel Oluştur', bg:'rgba(244,63,94,.1)', br:'rgba(244,63,94,.25)', c:'#f43f5e',
     chips:['Araba fotoğrafı oluştur','Uzay manzarası yap','Kedi çizimi oluştur','Orman görseli'],
-    sys:()=>`Sen Kumpir'in Görsel bölümüsün. Kullanıcı görsel istiyor.
-MUTLAKA Türkçe konuş. Başka dil kullanma.
-Görsel üretirken kısa bir Türkçe açıklama yaz: "Görseliniz hazırlanıyor..." veya "İşte istediğiniz görsel:" gibi.
-Görseli oluştururken SADECE şu formatı kullan: [GORSEL:açıklama]
-Örnek: Araba istendi → "İşte araba görseliniz! [GORSEL:modern spor araba kırmızı renkli]"
-Görsel dışı soru: "Bu bölüm görsel oluşturma içindir." de.`
+    sys:()=>`Sen Kumpir'in Görsel bölümüsün. SADECE TÜRKÇE konuş.
+Kullanıcı görsel istediğinde kısa ve samimi Türkçe bir mesaj yaz.`
   },
   matematik: {
     label:'🧮 Matematik', bg:'rgba(245,158,11,.1)', br:'rgba(245,158,11,.3)', c:'#f59e0b',
     chips:['15 × 27 = ?','x² + 5x + 6 = 0','Dairenin alanı?','Türev nedir?'],
-    sys:()=>`Sen Kumpir'in Matematik bölümüsün. MUTLAKA Türkçe konuş. Başka dil kullanma.
-SADECE matematik sorularına cevap ver. Adım adım çöz.
-Matematik dışı soru: "Bu bölüm sadece matematik içindir." de.`
+    sys:()=>`Sen Kumpir'in Matematik bölümüsün. SADECE TÜRKÇE konuş.
+Sadece matematik sorularına adım adım cevap ver. Matematik dışı soru gelirse: "Bu bölüm yalnızca matematik içindir." de.`
   },
   planlama: {
     label:'🗂️ Planlı Düşünme', bg:'rgba(52,211,153,.1)', br:'rgba(52,211,153,.25)', c:'#34d399',
     chips:['Uygulama yapmak istiyorum','Sınava hazırlık planı','Kilo vermek istiyorum','İş kurma planı'],
-    sys:()=>`Sen Kumpir'in Planlama bölümüsün. MUTLAKA Türkçe konuş. Başka dil kullanma.
-Görev verilince: hedef → aşamalar → adımlar → zaman → riskler şeklinde planla.
-Sadece planlama konularında cevap ver. ${STYLES[CFG.style].p}`
+    sys:()=>`Sen Kumpir'in Planlama bölümüsün. SADECE TÜRKÇE konuş.
+Hedef → aşamalar → adımlar → zaman → riskler şeklinde somut plan yap. Sadece planlama konularında cevap ver.
+${STYLES[CFG.style].p}`
   },
   kodlama: {
     label:'💻 Kodlama', bg:'rgba(167,139,250,.1)', br:'rgba(167,139,250,.25)', c:'#a78bfa',
     chips:['Python for döngüsü','Hata düzelt','React component','SQL JOIN'],
-    sys:()=>`Sen Kumpir'in Kodlama bölümüsün. MUTLAKA Türkçe konuş. Açıklamalar Türkçe olsun, kodlar İngilizce olabilir.
-Kod yaz, hataları düzelt, açıkla. Kod bloklarını backtick ile formatla.
-Sadece kodlama konularında cevap ver.`
+    sys:()=>`Sen Kumpir'in Kodlama bölümüsün. Açıklamaları TÜRKÇE yaz, kodlar İngilizce olabilir.
+Kod yaz, hataları düzelt, açıkla. Sadece kodlama konularında cevap ver.`
   },
   hizli: {
     label:'⚡ Hızlı Düşünme', bg:'rgba(244,114,182,.1)', br:'rgba(244,114,182,.25)', c:'#f472b6',
     chips:['En büyük ülke?','Pi sayısı?','Türkiye nüfusu?','1 mil kaç km?'],
-    sys:()=>`Sen Kumpir'in Hızlı Düşünme bölümüsün. MUTLAKA Türkçe konuş.
-KURAL: Maksimum 1-2 cümle. Giriş yok. Direkt cevap.`
+    sys:()=>`Sen Kumpir'in Hızlı Düşünme bölümüsün. SADECE TÜRKÇE. Maksimum 1-2 cümle. Giriş yok. Direkt cevap.`
+  },
+  dil: {
+    label:'🌍 Dil & Çeviri', bg:'rgba(251,191,36,.1)', br:'rgba(251,191,36,.25)', c:'#fbbf24',
+    chips:['Merhaba kelimesini İspanyolcaya çevir','İngilizce "hello" ne demek?','Fransızca nasıl öğrenirim?','Japonca merhaba nasıl denir?'],
+    sys:()=>`Sen Kumpir'in Dil ve Çeviri bölümüsün. SADECE TÜRKÇE konuş (çeviriler hariç).
+Görevlerin:
+- Kelimeleri veya cümleleri istenilen dile çevir
+- Diller hakkında bilgi ver
+- Dil öğrenme tavsiyeleri sun
+- Telaffuz ve gramer açıkla
+Çevirilerde: kaynak metin → hedef dil çevirisi → kısa açıklama formatını kullan.`
   }
 };
 
@@ -337,6 +343,7 @@ let listening = false;
 let uploadedImage = null; // {base64, mimeType, dataUrl}
 
 Object.keys(SECS).forEach(s => hist[s]=[]);
+hist['dil'] = hist['dil'] || [];
 
 // ── SIDEBAR ──
 function toggleSidebar(){ document.getElementById('sidebar').classList.toggle('open'); document.getElementById('overlay').classList.toggle('show'); }
