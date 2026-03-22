@@ -8,26 +8,74 @@
 <title>Kumpir AI</title>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
 <style>
-:root {
-  --bg:#07090f; --surface:#0e1118; --surface2:#161b27; --surface3:#1e2535;
+:root{
+  --bg:#07090f;--surface:#0e1118;--surface2:#161b27;--surface3:#1e2535;
   --border:rgba(255,255,255,0.07);
-  --accent:#3b82f6; --ab:#60a5fa; --a2:#a78bfa; --a3:#34d399; --a4:#f59e0b; --a5:#f472b6;
-  --text:#eef2ff; --text2:#8892aa; --text3:#4a5268;
-  --chat-bg: none;
+  --accent:#3b82f6;--ab:#60a5fa;--a2:#a78bfa;--a3:#34d399;--a4:#f59e0b;--a5:#f472b6;
+  --text:#eef2ff;--text2:#8892aa;--text3:#4a5268;
 }
+.light{--bg:#f0f4ff;--surface:#fff;--surface2:#e8eef8;--surface3:#dde5f5;--border:rgba(0,0,0,.08);--text:#1a1f36;--text2:#5a6180;--text3:#9aa0b8}
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 html,body{height:100%;height:100dvh;overflow:hidden;font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);transition:background .3s,color .3s}
+
+/* BG LAYER */
+.bg-layer{position:fixed;inset:0;pointer-events:none;z-index:0;transition:all .5s}
+
+/* ── ONBOARDING ── */
+.onboard{position:fixed;inset:0;z-index:1000;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#050810 0%,#0a0f1e 50%,#050810 100%)}
+.onboard-bg{position:absolute;inset:0;overflow:hidden}
+.onboard-orb{position:absolute;border-radius:50%;filter:blur(80px);animation:orbFloat 8s ease-in-out infinite}
+.orb1{width:400px;height:400px;background:rgba(59,130,246,.2);top:-100px;left:-100px;animation-delay:0s}
+.orb2{width:300px;height:300px;background:rgba(167,139,250,.15);bottom:-80px;right:-80px;animation-delay:3s}
+.orb3{width:200px;height:200px;background:rgba(52,211,153,.1);top:50%;left:50%;transform:translate(-50%,-50%);animation-delay:1.5s}
+@keyframes orbFloat{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(20px,-20px) scale(1.1)}}
+.orb3{animation:orbFloat3 6s ease-in-out infinite}
+@keyframes orbFloat3{0%,100%{transform:translate(-50%,-50%) scale(1)}50%{transform:translate(calc(-50% + 15px),calc(-50% - 15px)) scale(1.15)}}
+
+.onboard-card{position:relative;z-index:1;text-align:center;padding:40px 32px;max-width:420px;width:90%;animation:cardIn .8s cubic-bezier(.34,1.2,.64,1)}
+@keyframes cardIn{from{opacity:0;transform:translateY(30px) scale(.95)}to{opacity:1;transform:none}}
+
+.ob-logo{display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:8px}
+.ob-avatar{width:72px;height:72px;border-radius:20px;background:linear-gradient(135deg,#3b82f6,#a78bfa);display:flex;align-items:center;justify-content:center;font-size:36px;box-shadow:0 0 40px rgba(59,130,246,.5),0 20px 60px rgba(0,0,0,.4);animation:avatarPulse 3s ease-in-out infinite}
+@keyframes avatarPulse{0%,100%{box-shadow:0 0 40px rgba(59,130,246,.5),0 20px 60px rgba(0,0,0,.4)}50%{box-shadow:0 0 60px rgba(59,130,246,.8),0 20px 60px rgba(0,0,0,.4)}}
+
+.ob-tagline{font-size:13px;color:rgba(255,255,255,.4);margin-bottom:6px;letter-spacing:2px;text-transform:uppercase;font-family:'Syne',sans-serif}
+
+.ob-title{font-family:'Syne',sans-serif;font-weight:800;font-size:38px;line-height:1.1;margin-bottom:6px}
+.ob-title .t-blue{background:linear-gradient(135deg,#60a5fa,#a78bfa);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.ob-sub{font-size:15px;color:rgba(255,255,255,.5);margin-bottom:32px;line-height:1.6}
+
+.ob-phrase{font-size:14px;color:rgba(255,255,255,.35);margin-bottom:28px;font-style:italic;min-height:20px;transition:opacity .4s}
+
+.ob-input-wrap{position:relative;margin-bottom:16px}
+.ob-input{width:100%;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.15);border-radius:16px;padding:16px 20px;font-size:16px;color:white;outline:none;font-family:'DM Sans',sans-serif;transition:all .2s;text-align:center}
+.ob-input::placeholder{color:rgba(255,255,255,.3)}
+.ob-input:focus{border-color:rgba(59,130,246,.6);background:rgba(59,130,246,.08);box-shadow:0 0 0 3px rgba(59,130,246,.15)}
+
+.ob-btn{width:100%;padding:16px;background:linear-gradient(135deg,#3b82f6,#a78bfa);border:none;border-radius:16px;color:white;font-size:16px;font-weight:700;cursor:pointer;font-family:'Syne',sans-serif;transition:all .2s;box-shadow:0 8px 30px rgba(59,130,246,.4)}
+.ob-btn:hover{transform:translateY(-2px);box-shadow:0 12px 40px rgba(59,130,246,.5)}
+.ob-btn:active{transform:scale(.97)}
+.ob-btn:disabled{opacity:.4;cursor:not-allowed;transform:none}
+
+.ob-dots{display:flex;gap:6px;justify-content:center;margin-top:24px}
+.ob-dot{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.2)}
+.ob-dot.active{background:var(--accent);width:20px;border-radius:3px;transition:width .3s}
+
+/* ── SHELL ── */
 .shell{display:flex;flex-direction:column;height:100%;height:100dvh;position:relative;z-index:1}
-.bg-layer{position:fixed;inset:0;pointer-events:none;z-index:0}
 
 /* HEADER */
 header{height:54px;min-height:54px;display:flex;align-items:center;justify-content:space-between;padding:0 14px;border-bottom:1px solid var(--border);background:rgba(7,9,15,.9);backdrop-filter:blur(20px);flex-shrink:0;z-index:100;position:relative}
+.light header{background:rgba(240,244,255,.95)}
 .hleft{display:flex;align-items:center;gap:9px}
 .menu-btn{width:34px;height:34px;background:none;border:none;cursor:pointer;color:var(--text2);font-size:19px;border-radius:8px;display:flex;align-items:center;justify-content:center}
 .menu-btn:active{background:var(--surface2)}
 .logo{font-family:'Syne',sans-serif;font-weight:800;font-size:18px;display:flex;align-items:center;gap:8px}
-.logo-icon{width:30px;height:30px;background:linear-gradient(135deg,var(--accent),var(--a2));border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px;box-shadow:0 0 16px rgba(59,130,246,.4);flex-shrink:0}
+.logo-avatar{width:30px;height:30px;background:linear-gradient(135deg,var(--accent),var(--a2));border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;box-shadow:0 0 14px rgba(59,130,246,.4)}
 .logo span{background:linear-gradient(135deg,var(--ab),var(--a2));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hright{display:flex;align-items:center;gap:8px}
+.user-badge{display:flex;align-items:center;gap:6px;padding:4px 10px;border-radius:20px;background:var(--surface2);border:1px solid var(--border);font-size:11px;color:var(--text2)}
+.user-badge .uavatar{width:18px;height:18px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--a2));display:flex;align-items:center;justify-content:center;font-size:9px;color:white;font-weight:700}
 .status-pill{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--text2);padding:4px 10px;border-radius:20px;background:var(--surface2);border:1px solid var(--border)}
 .sdot{width:6px;height:6px;background:var(--a3);border-radius:50%;animation:pulse 2s ease-in-out infinite}
 @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.75)}}
@@ -35,16 +83,17 @@ header{height:54px;min-height:54px;display:flex;align-items:center;justify-conte
 /* SIDEBAR */
 .body{display:flex;flex:1;overflow:hidden;position:relative}
 .sidebar{width:220px;flex-shrink:0;border-right:1px solid var(--border);background:rgba(7,9,15,.8);backdrop-filter:blur(20px);display:flex;flex-direction:column;padding:12px 10px;gap:3px;overflow-y:auto;transition:transform .26s cubic-bezier(.4,0,.2,1);z-index:50}
+.light .sidebar{background:rgba(240,244,255,.9)}
 .slabel{font-size:9.5px;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;color:var(--text3);padding:8px 10px 5px;font-family:'Syne',sans-serif}
 .sbtn{display:flex;align-items:center;gap:9px;padding:9px 11px;border-radius:10px;border:1px solid transparent;background:transparent;color:var(--text2);cursor:pointer;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;transition:.16s;text-align:left;width:100%;white-space:nowrap}
 .sbtn:active,.sbtn:hover{background:var(--surface2);color:var(--text)}
 .sbtn.active{background:var(--surface2);border-color:var(--border);color:var(--text)}
 .sbtn.active[data-s="genel"]{border-left:3px solid var(--accent)}
-.sbtn.active[data-s="gorsel"]{border-left:3px solid #f43f5e}
 .sbtn.active[data-s="matematik"]{border-left:3px solid var(--a4)}
 .sbtn.active[data-s="planlama"]{border-left:3px solid var(--a3)}
 .sbtn.active[data-s="kodlama"]{border-left:3px solid var(--a2)}
 .sbtn.active[data-s="hizli"]{border-left:3px solid var(--a5)}
+.sbtn.active[data-s="gorsel"]{border-left:3px solid #f43f5e}
 .sbtn.active[data-s="dil"]{border-left:3px solid #fbbf24}
 .sbtn.active[data-s="ayarlar"]{border-left:3px solid var(--text2)}
 .sicon{font-size:15px;width:18px;text-align:center;flex-shrink:0}
@@ -58,7 +107,7 @@ header{height:54px;min-height:54px;display:flex;align-items:center;justify-conte
 .badge{display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:30px;font-size:12px;font-weight:700;font-family:'Syne',sans-serif;white-space:nowrap}
 
 /* MESSAGES */
-.messages{flex:1;overflow-y:auto;overflow-x:hidden;padding:14px 12px 8px;display:flex;flex-direction:column;gap:14px;scroll-behavior:smooth;-webkit-overflow-scrolling:touch;position:relative;z-index:1}
+.messages{flex:1;overflow-y:auto;overflow-x:hidden;padding:14px 12px 8px;display:flex;flex-direction:column;gap:14px;scroll-behavior:smooth;-webkit-overflow-scrolling:touch}
 .messages::-webkit-scrollbar{width:3px}
 .messages::-webkit-scrollbar-thumb{background:var(--surface3);border-radius:4px}
 .msg{display:flex;gap:9px;animation:msgIn .26s cubic-bezier(.34,1.4,.64,1);max-width:100%}
@@ -67,7 +116,7 @@ header{height:54px;min-height:54px;display:flex;align-items:center;justify-conte
 .msg.ai{max-width:94%}
 .avatar{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;margin-top:2px}
 .msg.ai .avatar{background:linear-gradient(135deg,var(--accent),var(--a2));box-shadow:0 0 10px rgba(59,130,246,.3)}
-.msg.user .avatar{background:var(--surface3);border:1px solid var(--border)}
+.msg.user .avatar{background:var(--surface3);border:1px solid var(--border);font-size:10px;font-weight:700;color:var(--ab);font-family:'Syne',sans-serif}
 .msg-inner{display:flex;flex-direction:column;min-width:0}
 .msg.user .msg-inner{align-items:flex-end}
 .mname{font-size:9.5px;font-weight:700;letter-spacing:.5px;margin-bottom:3px;font-family:'Syne',sans-serif;text-transform:uppercase}
@@ -81,10 +130,10 @@ header{height:54px;min-height:54px;display:flex;align-items:center;justify-conte
 .bubble pre code{background:transparent;padding:0}
 .bubble strong{color:var(--ab);font-weight:600}
 .bubble em{color:var(--a2)}
-.gen-img{max-width:260px;border-radius:12px;border:1px solid var(--border);margin-top:6px;display:block}
+.gen-img{max-width:100%;max-width:280px;border-radius:12px;border:1px solid var(--border);margin-top:6px;display:block}
 .vision-thumb{max-width:160px;border-radius:8px;border:1px solid var(--border);margin-bottom:6px;display:block}
-.speak-btn{background:none;border:none;cursor:pointer;font-size:14px;margin-top:4px;opacity:.5;transition:.2s;padding:2px}
-.speak-btn:hover{opacity:1}
+.speak-btn{background:none;border:none;cursor:pointer;font-size:13px;margin-top:5px;opacity:.45;transition:.2s;padding:2px 4px;border-radius:6px}
+.speak-btn:hover{opacity:1;background:var(--surface2)}
 
 /* TYPING */
 .tdots{display:flex;gap:5px;align-items:center;padding:8px 12px}
@@ -96,20 +145,29 @@ header{height:54px;min-height:54px;display:flex;align-items:center;justify-conte
 
 /* WELCOME */
 .welcome{display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1;gap:10px;text-align:center;padding:20px 14px}
-.wicon{font-size:44px;filter:drop-shadow(0 0 18px rgba(59,130,246,.45));animation:float 3.5s ease-in-out infinite}
-@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+.wicon{font-size:44px;filter:drop-shadow(0 0 18px rgba(59,130,246,.45));animation:floatIcon 3.5s ease-in-out infinite}
+@keyframes floatIcon{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
 .welcome h2{font-family:'Syne',sans-serif;font-size:21px;font-weight:800;background:linear-gradient(135deg,var(--text),var(--text2));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
 .welcome p{color:var(--text3);font-size:12.5px;max-width:290px;line-height:1.6}
 .chips{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-top:4px;max-width:320px}
 .chip{padding:6px 12px;border-radius:30px;border:1px solid var(--border);background:var(--surface);color:var(--text2);font-size:11.5px;cursor:pointer;transition:.15s;font-family:'DM Sans',sans-serif;-webkit-user-select:none}
 .chip:active{background:var(--surface2);color:var(--text);transform:scale(.96)}
 
-/* INPUT */
-.input-area{padding:8px 11px;padding-bottom:calc(8px + env(safe-area-inset-bottom,0px));background:rgba(7,9,15,.94);backdrop-filter:blur(24px);border-top:1px solid var(--border);flex-shrink:0}
-.img-preview-bar{display:none;padding:5px 11px;background:var(--surface);border-top:1px solid var(--border)}
+/* QUICK BAR */
+.quick-bar{display:flex;gap:6px;padding:7px 12px;border-top:1px solid var(--border);background:rgba(7,9,15,.6);flex-shrink:0;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.quick-bar::-webkit-scrollbar{display:none}
+.qbtn{display:flex;align-items:center;gap:5px;padding:5px 11px;border-radius:20px;border:1px solid var(--border);background:var(--surface2);color:var(--text2);font-size:11px;cursor:pointer;white-space:nowrap;font-family:'DM Sans',sans-serif;transition:.15s;flex-shrink:0}
+.qbtn:active,.qbtn:hover{background:var(--surface3);color:var(--text)}
+
+/* IMAGE PREVIEW BAR */
+.img-preview-bar{display:none;padding:5px 12px;background:var(--surface);border-top:1px solid var(--border);flex-shrink:0}
 .img-preview-inner{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text2)}
 .img-preview-inner img{width:36px;height:36px;border-radius:6px;object-fit:cover;border:1px solid var(--border)}
 .rm-img{margin-left:auto;background:none;border:none;color:var(--text3);cursor:pointer;font-size:16px}
+
+/* INPUT */
+.input-area{padding:8px 11px;padding-bottom:calc(8px + env(safe-area-inset-bottom,0px));background:rgba(7,9,15,.94);backdrop-filter:blur(24px);border-top:1px solid var(--border);flex-shrink:0}
+.light .input-area{background:rgba(240,244,255,.97)}
 .irow{display:flex;align-items:flex-end;gap:6px;max-width:760px;margin:0 auto}
 .ibox{flex:1;min-width:0;background:var(--surface);border:1px solid var(--border);border-radius:15px;padding:11px 13px;font-family:'DM Sans',sans-serif;font-size:14px;color:var(--text);outline:none;resize:none;min-height:44px;max-height:110px;line-height:1.5;transition:border-color .2s,box-shadow .2s;overflow-y:auto;-webkit-overflow-scrolling:touch}
 .ibox::placeholder{color:var(--text3)}
@@ -117,7 +175,7 @@ header{height:54px;min-height:54px;display:flex;align-items:center;justify-conte
 .ibtns{display:flex;gap:5px;flex-shrink:0}
 .ibtn{width:40px;height:40px;border-radius:12px;border:1px solid var(--border);background:var(--surface2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:17px;color:var(--text2);transition:.15s;flex-shrink:0}
 .ibtn:active{transform:scale(.92)}
-.mic-btn.on{background:rgba(239,68,68,.15);border-color:rgba(239,68,68,.5);color:#ef4444;animation:mp 1s ease-in-out infinite}
+.mic-on{background:rgba(239,68,68,.15)!important;border-color:rgba(239,68,68,.5)!important;color:#ef4444!important;animation:mp 1s ease-in-out infinite}
 @keyframes mp{0%,100%{transform:scale(1)}50%{transform:scale(1.07)}}
 .send-btn{width:40px;height:40px;background:linear-gradient(135deg,var(--accent),var(--a2));border:none;border-radius:12px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#fff;font-size:15px;transition:.15s;box-shadow:0 3px 12px rgba(59,130,246,.35);flex-shrink:0}
 .send-btn:active{transform:scale(.92)}
@@ -127,24 +185,7 @@ header{height:54px;min-height:54px;display:flex;align-items:center;justify-conte
 .vstat.show{display:inline}
 
 /* SETTINGS */
-.set-panel{flex:1;overflow-y:auto;padding:14px 12px;display:flex;flex-direction:column;gap:14px;-webkit-overflow-scrolling:touch}
-
-/* MODAL */
-.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:500;backdrop-filter:blur(4px);align-items:center;justify-content:center;padding:16px}
-.modal-overlay.show{display:flex}
-.modal{background:var(--surface);border:1px solid var(--border);border-radius:18px;width:100%;max-width:560px;max-height:85vh;display:flex;flex-direction:column;overflow:hidden;animation:modalIn .25s cubic-bezier(.34,1.4,.64,1)}
-@keyframes modalIn{from{opacity:0;transform:scale(.92)}to{opacity:1;transform:none}}
-.modal-header{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid var(--border);flex-shrink:0}
-.modal-title{font-family:'Syne',sans-serif;font-size:14px;font-weight:700}
-.modal-close{background:none;border:none;cursor:pointer;color:var(--text2);font-size:20px;width:32px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:8px}
-.modal-close:hover{background:var(--surface2)}
-.modal-body{overflow-y:auto;padding:14px;-webkit-overflow-scrolling:touch;flex:1}
-
-/* QUICK SETTINGS BAR */
-.quick-bar{display:flex;gap:6px;padding:8px 14px;border-top:1px solid var(--border);background:rgba(7,9,15,.5);flex-shrink:0;overflow-x:auto;-webkit-overflow-scrolling:touch}
-.quick-bar::-webkit-scrollbar{display:none}
-.qbtn{display:flex;align-items:center;gap:5px;padding:5px 10px;border-radius:20px;border:1px solid var(--border);background:var(--surface2);color:var(--text2);font-size:11px;cursor:pointer;white-space:nowrap;font-family:'DM Sans',sans-serif;transition:.15s;flex-shrink:0}
-.qbtn:hover,.qbtn:active{background:var(--surface3);color:var(--text)}
+.set-panel{flex:1;overflow-y:auto;padding:14px 12px;display:flex;flex-direction:column;gap:12px;-webkit-overflow-scrolling:touch}
 .set-sec{background:var(--surface);border:1px solid var(--border);border-radius:13px;overflow:hidden}
 .set-title{padding:10px 14px 8px;font-family:'Syne',sans-serif;font-size:10px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--text3);border-bottom:1px solid var(--border)}
 .set-row{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;border-bottom:1px solid var(--border);gap:12px}
@@ -155,49 +196,103 @@ header{height:54px;min-height:54px;display:flex;align-items:center;justify-conte
 .toggle::after{content:'';position:absolute;width:17px;height:17px;border-radius:50%;background:white;top:3px;left:3px;transition:transform .2s;box-shadow:0 1px 4px rgba(0,0,0,.3)}
 .toggle.on{background:var(--accent)}
 .toggle.on::after{transform:translateX(19px)}
-.sel-row{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border-bottom:1px solid var(--border);gap:8px}
-.sel-row:last-child{border-bottom:none}
-.sel-row select{background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:6px 10px;border-radius:8px;font-size:12px;font-family:'DM Sans',sans-serif;outline:none;cursor:pointer;max-width:160px}
-.style-opts{display:flex;flex-direction:column;gap:1px;padding:5px 8px 8px}
-.sopt{display:flex;align-items:center;gap:10px;padding:8px 9px;border-radius:9px;cursor:pointer;transition:.14s;border:1px solid transparent}
-.sopt:active{background:var(--surface2)}
-.sopt.sel{background:var(--surface2);border-color:rgba(59,130,246,.3)}
-.sopt-icon{font-size:18px;width:24px;text-align:center;flex-shrink:0}
+.set-select{background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:6px 10px;border-radius:8px;font-size:12px;font-family:'DM Sans',sans-serif;outline:none;cursor:pointer;max-width:160px}
+.arrow-row{cursor:pointer}
+.arrow-row:hover{background:var(--surface2)}
+.arrow-ico{color:var(--text3);font-size:18px;flex-shrink:0}
+
+/* MODAL */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:500;align-items:center;justify-content:center;padding:16px;backdrop-filter:blur(4px)}
+.modal-overlay.show{display:flex}
+.modal{background:var(--surface);border:1px solid var(--border);border-radius:18px;width:100%;max-width:580px;max-height:85vh;display:flex;flex-direction:column;overflow:hidden;animation:modalIn .25s cubic-bezier(.34,1.4,.64,1)}
+@keyframes modalIn{from{opacity:0;transform:scale(.92)}to{opacity:1;transform:none}}
+.modal-header{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid var(--border);flex-shrink:0}
+.modal-title{font-family:'Syne',sans-serif;font-size:14px;font-weight:700}
+.modal-close{background:none;border:none;cursor:pointer;color:var(--text2);font-size:20px;width:32px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:8px}
+.modal-close:hover{background:var(--surface2)}
+.modal-body{overflow-y:auto;-webkit-overflow-scrolling:touch;flex:1}
+
+/* THEME GRID */
+.theme-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;padding:14px}
+.tcard{border-radius:12px;cursor:pointer;overflow:hidden;border:2px solid transparent;transition:all .2s;aspect-ratio:16/9;position:relative;box-shadow:0 4px 16px rgba(0,0,0,.3)}
+.tcard.sel{border-color:var(--accent);box-shadow:0 0 0 3px rgba(59,130,246,.3)}
+.tcard:active{transform:scale(.95)}
+.tcard-label{position:absolute;bottom:0;left:0;right:0;padding:6px 8px;background:linear-gradient(to top,rgba(0,0,0,.8),transparent);font-size:10px;font-weight:700;color:white;font-family:'Syne',sans-serif;text-shadow:0 1px 3px rgba(0,0,0,.8)}
+.tcard-check{position:absolute;top:6px;right:6px;width:18px;height:18px;border-radius:50%;background:var(--accent);display:none;align-items:center;justify-content:center;font-size:10px;color:white}
+.tcard.sel .tcard-check{display:flex}
+
+/* STYLE OPTS */
+.sopt{display:flex;align-items:center;gap:10px;padding:10px 14px;cursor:pointer;border-bottom:1px solid var(--border);transition:.14s}
+.sopt:last-child{border-bottom:none}
+.sopt:active,.sopt:hover{background:var(--surface2)}
+.sopt.sel{background:rgba(59,130,246,.06)}
+.sopt-icon{font-size:20px;width:26px;text-align:center;flex-shrink:0}
 .sopt-name{font-size:13px;font-weight:600}
 .sopt-desc{font-size:11px;color:var(--text3);margin-top:1px}
-.sopt-chk{width:17px;height:17px;border-radius:50%;background:var(--accent);display:none;align-items:center;justify-content:center;font-size:9px;color:white;flex-shrink:0;margin-left:auto}
+.sopt-chk{width:18px;height:18px;border-radius:50%;background:var(--accent);display:none;align-items:center;justify-content:center;font-size:9px;color:white;flex-shrink:0;margin-left:auto}
 .sopt.sel .sopt-chk{display:flex}
-
-/* THEMES GRID */
-.theme-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;padding:10px 12px}
-.tcard{border-radius:10px;cursor:pointer;overflow:hidden;border:2px solid transparent;transition:.2s;aspect-ratio:1;position:relative}
-.tcard.sel{border-color:var(--accent)}
-.tcard:active{transform:scale(.94)}
-.tcard-inner{width:100%;height:100%;display:flex;flex-direction:column;justify-content:flex-end;padding:4px}
-.tcard-name{font-size:9px;font-weight:700;color:white;text-shadow:0 1px 3px rgba(0,0,0,.7);text-align:center;line-height:1.2;font-family:'Syne',sans-serif}
 
 /* RESPONSIVE */
 @media(max-width:640px){
   .sidebar{position:fixed;top:0;left:0;bottom:0;width:260px;transform:translateX(-100%);z-index:200;padding-top:62px;padding-bottom:env(safe-area-inset-bottom,0)}
   .sidebar.open{transform:translateX(0);box-shadow:4px 0 24px rgba(0,0,0,.4)}
+  .theme-grid{grid-template-columns:repeat(2,1fr)}
 }
 @media(min-width:641px){.menu-btn{display:none}}
 @media(max-width:380px){.bubble{font-size:13px}.ibox{font-size:13px}}
 </style>
 </head>
 <body>
+
+<!-- ── ONBOARDING ── -->
+<div class="onboard" id="onboard">
+  <div class="onboard-bg">
+    <div class="onboard-orb orb1"></div>
+    <div class="onboard-orb orb2"></div>
+    <div class="onboard-orb orb3"></div>
+  </div>
+  <div class="onboard-card">
+    <div class="ob-logo">
+      <div class="ob-avatar">🥔</div>
+    </div>
+    <div class="ob-tagline">Yapay Zeka Asistanın</div>
+    <div class="ob-title">Kumpir <span class="t-blue">AI</span></div>
+    <div class="ob-sub">Her şeyi bilen, hiçbir şeyi gizlemeyen<br>akıllı sohbet arkadaşın.</div>
+
+    <div class="ob-phrase" id="obPhrase">Bilgi güçtür, ama sohbet daha güçlüdür.</div>
+
+    <div class="ob-input-wrap">
+      <input class="ob-input" id="obName" type="text" placeholder="Adını yaz..." maxlength="30" onkeydown="if(event.key==='Enter')startApp()">
+    </div>
+    <button class="ob-btn" id="obBtn" onclick="startApp()">Kumpir ile Başla →</button>
+
+    <div class="ob-dots">
+      <div class="ob-dot active"></div>
+      <div class="ob-dot"></div>
+      <div class="ob-dot"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ── MAIN APP ── -->
 <div class="bg-layer" id="bgLayer"></div>
-<div class="shell">
+<div class="shell" id="appShell" style="display:none">
 
 <header>
   <div class="hleft">
     <button class="menu-btn" onclick="toggleSidebar()">☰</button>
     <div class="logo">
-      <div class="logo-icon">🥔</div>
+      <div class="logo-avatar">🥔</div>
       <div>Kumpir <span>AI</span></div>
     </div>
   </div>
-  <div class="status-pill"><div class="sdot"></div><span>Çevrimiçi</span></div>
+  <div class="hright">
+    <div class="user-badge" id="userBadge">
+      <div class="uavatar" id="uAvatar">K</div>
+      <span id="uName">Kullanıcı</span>
+    </div>
+    <div class="status-pill"><div class="sdot"></div><span>Çevrimiçi</span></div>
+  </div>
 </header>
 
 <div class="body">
@@ -221,32 +316,20 @@ header{height:54px;min-height:54px;display:flex;align-items:center;justify-conte
       <div class="badge" id="badge" style="background:rgba(59,130,246,.1);border:1px solid rgba(59,130,246,.25);color:#60a5fa">🌐 Genel Sohbet</div>
     </div>
 
-    <div class="messages" id="messages">
-      <div class="welcome" id="welcome">
-        <div class="wicon">🥔</div>
-        <h2>Merhaba! Ben Kumpir.</h2>
-        <p>Her şeyi bilen yapay zeka asistanın. Bölüm seç ya da hemen sor!</p>
-        <div class="chips">
-          <div class="chip" onclick="sendChip(this)">Selam! Nasılsın?</div>
-          <div class="chip" onclick="sendChip(this)">15 × 27 = ?</div>
-          <div class="chip" onclick="sendChip(this)">Araba fotoğrafı oluştur</div>
-          <div class="chip" onclick="sendChip(this)">Kod yaz</div>
-        </div>
-      </div>
+    <div class="messages" id="messages"></div>
+
+    <div class="quick-bar" id="quickBar">
+      <button class="qbtn" onclick="openModal('themes')">🎨 Temalar</button>
+      <button class="qbtn" onclick="openModal('tts')">🔊 Ses</button>
+      <button class="qbtn" onclick="openModal('style')">💬 Tarz</button>
+      <button class="qbtn" onclick="toggleTheme()">🌙 Koyu/Açık</button>
+      <button class="qbtn" onclick="sw(document.querySelector('[data-s=ayarlar]'))">⚙️ Ayarlar</button>
     </div>
 
-    <div id="quickBar" style="display:none;gap:6px;padding:8px 14px;border-top:1px solid var(--border);background:rgba(7,9,15,.5);flex-shrink:0;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none">
-      <button style="display:flex;align-items:center;gap:5px;padding:5px 10px;border-radius:20px;border:1px solid var(--border);background:var(--surface2);color:var(--text2);font-size:11px;cursor:pointer;white-space:nowrap;font-family:'DM Sans',sans-serif;flex-shrink:0" onclick="openModal('themes')">🎨 Temalar</button>
-      <button style="display:flex;align-items:center;gap:5px;padding:5px 10px;border-radius:20px;border:1px solid var(--border);background:var(--surface2);color:var(--text2);font-size:11px;cursor:pointer;white-space:nowrap;font-family:'DM Sans',sans-serif;flex-shrink:0" onclick="openModal('tts')">🔊 Ses</button>
-      <button style="display:flex;align-items:center;gap:5px;padding:5px 10px;border-radius:20px;border:1px solid var(--border);background:var(--surface2);color:var(--text2);font-size:11px;cursor:pointer;white-space:nowrap;font-family:'DM Sans',sans-serif;flex-shrink:0" onclick="openModal('style')">💬 Tarz</button>
-      <button style="display:flex;align-items:center;gap:5px;padding:5px 10px;border-radius:20px;border:1px solid var(--border);background:var(--surface2);color:var(--text2);font-size:11px;cursor:pointer;white-space:nowrap;font-family:'DM Sans',sans-serif;flex-shrink:0" onclick="toggleTheme()">🌙 Tema</button>
-      <button style="display:flex;align-items:center;gap:5px;padding:5px 10px;border-radius:20px;border:1px solid var(--border);background:var(--surface2);color:var(--text2);font-size:11px;cursor:pointer;white-space:nowrap;font-family:'DM Sans',sans-serif;flex-shrink:0" onclick="sw(document.querySelector('[data-s=ayarlar]'))">⚙️ Ayarlar</button>
-    </div>
-
-    <div class="img-preview-bar" id="imgPreviewBar">
+    <div class="img-preview-bar" id="imgBar">
       <div class="img-preview-inner">
         <img id="imgThumb" src="" alt="">
-        <span id="imgName"></span>
+        <span id="imgNameLbl" style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12px"></span>
         <button class="rm-img" onclick="removeImg()">✕</button>
       </div>
     </div>
@@ -257,8 +340,8 @@ header{height:54px;min-height:54px;display:flex;align-items:center;justify-conte
           onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
         <div class="ibtns">
           <button class="ibtn" onclick="document.getElementById('fileIn').click()" title="Fotoğraf yükle">📷</button>
-          <button class="ibtn mic-btn" id="micBtn" onclick="toggleMic()">🎤</button>
-          <button class="send-btn" id="sendBtn" onclick="send()">➤</button>
+          <button class="ibtn" id="micBtn" onclick="toggleMic()">🎤</button>
+          <button class="send-btn" id="sendBtn" onclick="doSend()">➤</button>
         </div>
       </div>
       <div class="ifooter">
@@ -269,21 +352,14 @@ header{height:54px;min-height:54px;display:flex;align-items:center;justify-conte
   </div>
 </div>
 </div>
+
 <input type="file" id="fileIn" accept="image/*" style="display:none" onchange="handleImgUpload(event)">
 
-<!-- QUICK BAR -->
-<div class="quick-bar" id="quickBar" style="display:none">
-  <button class="qbtn" onclick="openModal('themes')">🎨 Temalar</button>
-  <button class="qbtn" onclick="openModal('tts')">🔊 Ses Ayarları</button>
-  <button class="qbtn" onclick="openModal('style')">💬 Konuşma Tarzı</button>
-  <button class="qbtn" onclick="toggleTheme()">🌙 Tema</button>
-</div>
-
 <!-- MODAL -->
-<div class="modal-overlay" id="modalOverlay" onclick="closeModalOutside(event)">
+<div class="modal-overlay" id="modalOverlay" onclick="closeModalOut(event)">
   <div class="modal">
     <div class="modal-header">
-      <div class="modal-title" id="modalTitle">Temalar</div>
+      <div class="modal-title" id="modalTitle"></div>
       <button class="modal-close" onclick="closeModal()">✕</button>
     </div>
     <div class="modal-body" id="modalBody"></div>
@@ -291,148 +367,200 @@ header{height:54px;min-height:54px;display:flex;align-items:center;justify-conte
 </div>
 
 <script>
+// ── PHRASES ──
+const PHRASES=[
+  'Bilgi güçtür, ama sohbet daha güçlüdür.',
+  'Her sorunun bir cevabı var — sen sadece sor.',
+  'Yapay zeka değil, dijital dostun.',
+  'Merak etmek, öğrenmenin ilk adımıdır.',
+  'Sonsuz bilgi, tek bir sohbetle başlar.',
+  'Düşün, sor, keşfet.',
+  'Kumpir burada — her an, her konuda.',
+];
+let phraseIdx=0;
+function rotatePhrases(){
+  const el=document.getElementById('obPhrase');
+  if(!el) return;
+  el.style.opacity=0;
+  setTimeout(()=>{
+    phraseIdx=(phraseIdx+1)%PHRASES.length;
+    el.textContent=PHRASES[phraseIdx];
+    el.style.opacity=1;
+  },400);
+}
+setInterval(rotatePhrases,3000);
+
 // ── CONFIG ──
-let CFG = { theme:'dark', chatTheme:'default', style:'normal', tts:false, ttsVoice:'female', ttsRate:1 };
-try { const s=localStorage.getItem('kumpir_cfg'); if(s) CFG={...CFG,...JSON.parse(s)}; } catch(e){}
-const saveCFG = () => { try{localStorage.setItem('kumpir_cfg',JSON.stringify(CFG));}catch(e){} };
+let CFG={theme:'dark',chatTheme:'default',style:'normal',tts:false,ttsVoice:'female',ttsRate:1,userName:''};
+try{const s=localStorage.getItem('kumpir_cfg');if(s)CFG={...CFG,...JSON.parse(s)};}catch(e){}
+const saveCFG=()=>{try{localStorage.setItem('kumpir_cfg',JSON.stringify(CFG));}catch(e){}};
+
+// ── ONBOARDING ──
+function startApp(){
+  const name=document.getElementById('obName').value.trim();
+  if(!name){document.getElementById('obName').focus();document.getElementById('obName').style.borderColor='rgba(239,68,68,.6)';return;}
+  CFG.userName=name; saveCFG();
+  document.getElementById('onboard').style.animation='fadeOut .5s forwards';
+  setTimeout(()=>{
+    document.getElementById('onboard').style.display='none';
+    document.getElementById('appShell').style.display='flex';
+    initApp();
+  },500);
+}
+// Check if returning user
+window.addEventListener('load',()=>{
+  if(CFG.userName){
+    document.getElementById('onboard').style.display='none';
+    document.getElementById('appShell').style.display='flex';
+    initApp();
+  }
+});
+
+const style=document.createElement('style');
+style.textContent='@keyframes fadeOut{to{opacity:0;transform:scale(1.05)}}';
+document.head.appendChild(style);
+
+function initApp(){
+  const n=CFG.userName;
+  document.getElementById('uName').textContent=n;
+  document.getElementById('uAvatar').textContent=n[0].toUpperCase();
+  applyTheme();
+  sw(document.querySelector('.sbtn.active'));
+}
 
 // ── THEMES ──
-const CHAT_THEMES = {
-  default:   { name:'Varsayılan',  css:'', bg:'' },
-  midnight:  { name:'Gece Mavisi', css:'--bg:#050a1a;--surface:#0a1628;--surface2:#0f2040;--accent:#4f9eff', bg:'radial-gradient(ellipse 60% 50% at 20% 10%,rgba(30,80,200,.2),transparent)' },
-  forest:    { name:'Orman',       css:'--bg:#071410;--surface:#0d2018;--surface2:#123024;--accent:#22c55e', bg:'radial-gradient(ellipse 70% 60% at 50% 0%,rgba(20,120,60,.25),transparent)' },
-  sunset:    { name:'Günbatımı',   css:'--bg:#1a0a0a;--surface:#220f0f;--surface2:#2d1515;--accent:#f97316', bg:'radial-gradient(ellipse 80% 50% at 50% 0%,rgba(200,80,20,.2),transparent)' },
-  purple:    { name:'Mor Gece',    css:'--bg:#0d0a1a;--surface:#160f28;--surface2:#1f1438;--accent:#a855f7', bg:'radial-gradient(ellipse 70% 60% at 30% 0%,rgba(120,40,200,.2),transparent)' },
-  rose:      { name:'Pembe',       css:'--bg:#1a0a10;--surface:#220f16;--surface2:#2d151e;--accent:#f43f5e', bg:'radial-gradient(ellipse 70% 60% at 70% 10%,rgba(200,40,80,.2),transparent)' },
-  ocean:     { name:'Okyanus',     css:'--bg:#050f1a;--surface:#0a1a28;--surface2:#0f2438;--accent:#06b6d4', bg:'radial-gradient(ellipse 80% 60% at 50% 100%,rgba(6,100,200,.2),transparent)' },
-  gold:      { name:'Altın',       css:'--bg:#100e00;--surface:#1a1600;--surface2:#261f00;--accent:#f59e0b', bg:'radial-gradient(ellipse 70% 50% at 50% 0%,rgba(180,140,0,.2),transparent)' },
-  arctic:    { name:'Kutup',       css:'--bg:#0a0f14;--surface:#101820;--surface2:#16232e;--accent:#7dd3fc', bg:'radial-gradient(ellipse 80% 60% at 50% 0%,rgba(100,180,240,.15),transparent)' },
-  ember:     { name:'Kor',         css:'--bg:#120800;--surface:#1c0e00;--surface2:#261500;--accent:#ef4444', bg:'radial-gradient(ellipse 70% 50% at 50% 0%,rgba(200,60,20,.2),transparent)' },
-  // Desenli temalar
-  dots:      { name:'Noktalar',    css:'', bg:'', pattern:'radial-gradient(circle,rgba(59,130,246,.15) 1px,transparent 1px) 0 0/20px 20px' },
-  lines:     { name:'Çizgiler',    css:'', bg:'', pattern:'repeating-linear-gradient(45deg,rgba(59,130,246,.05) 0,rgba(59,130,246,.05) 1px,transparent 1px,transparent 12px)' },
-  grid:      { name:'Izgara',      css:'', bg:'', pattern:'linear-gradient(rgba(59,130,246,.07) 1px,transparent 1px),linear-gradient(90deg,rgba(59,130,246,.07) 1px,transparent 1px);background-size:24px 24px' },
-  hexagon:   { name:'Altıgen',     css:'', bg:'', pattern:'radial-gradient(circle at 50% 50%,rgba(167,139,250,.1) 0%,transparent 60%) 0 0/40px 40px,radial-gradient(circle at 0% 100%,rgba(167,139,250,.08) 0%,transparent 60%) 0 0/40px 40px' },
-  waves:     { name:'Dalgalar',    css:'', bg:'', pattern:'repeating-linear-gradient(0deg,transparent,transparent 20px,rgba(59,130,246,.04) 20px,rgba(59,130,246,.04) 21px),repeating-linear-gradient(90deg,transparent,transparent 20px,rgba(59,130,246,.04) 20px,rgba(59,130,246,.04) 21px)' },
-  stars:     { name:'Yıldızlar',   css:'', bg:'radial-gradient(ellipse 60% 40% at 20% 20%,rgba(167,139,250,.15),transparent),radial-gradient(ellipse 40% 40% at 80% 80%,rgba(59,130,246,.1),transparent)', pattern:'radial-gradient(circle,rgba(255,255,255,.15) 1px,transparent 1px) 0 0/30px 30px,radial-gradient(circle,rgba(255,255,255,.08) 1px,transparent 1px) 15px 15px/30px 30px' },
-  circuit:   { name:'Devre',       css:'', bg:'', pattern:'linear-gradient(rgba(52,211,153,.08) 1px,transparent 1px),linear-gradient(90deg,rgba(52,211,153,.08) 1px,transparent 1px),linear-gradient(rgba(52,211,153,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(52,211,153,.04) 1px,transparent 1px);background-size:50px 50px,50px 50px,10px 10px,10px 10px' },
-  bubble:    { name:'Baloncuk',    css:'', bg:'', pattern:'radial-gradient(circle 8px at 10px 10px,rgba(59,130,246,.12) 0%,transparent 100%) 0 0/30px 30px,radial-gradient(circle 5px at 20px 25px,rgba(167,139,250,.1) 0%,transparent 100%) 0 0/30px 30px' },
-  diamond:   { name:'Elmas',       css:'', bg:'', pattern:'linear-gradient(45deg,rgba(59,130,246,.08) 25%,transparent 25%),linear-gradient(-45deg,rgba(59,130,246,.08) 25%,transparent 25%),linear-gradient(45deg,transparent 75%,rgba(59,130,246,.08) 75%),linear-gradient(-45deg,transparent 75%,rgba(59,130,246,.08) 75%);background-size:20px 20px' },
-  neon:      { name:'Neon',        css:'--accent:#00ff88;--a2:#ff00ff', bg:'radial-gradient(ellipse 50% 40% at 30% 20%,rgba(0,255,136,.1),transparent),radial-gradient(ellipse 50% 40% at 70% 80%,rgba(255,0,255,.1),transparent)', pattern:'' },
+const THEMES={
+  default:{name:'Varsayılan',css:'',bg:'radial-gradient(ellipse 55% 40% at 15% 8%,rgba(59,130,246,.08),transparent),radial-gradient(ellipse 45% 45% at 85% 85%,rgba(167,139,250,.06),transparent)',pattern:''},
+  midnight:{name:'Gece Mavisi',css:'--bg:#050a1a;--surface:#0a1628;--surface2:#0f2040;--accent:#4f9eff',bg:'radial-gradient(ellipse 70% 60% at 20% 10%,rgba(30,80,200,.25),transparent)',pattern:''},
+  forest:{name:'Orman',css:'--bg:#071410;--surface:#0d2018;--surface2:#123024;--accent:#22c55e',bg:'radial-gradient(ellipse 80% 60% at 50% 0%,rgba(20,120,60,.2),transparent)',pattern:''},
+  sunset:{name:'Günbatımı',css:'--bg:#1a0a0a;--surface:#220f0f;--surface2:#2d1515;--accent:#f97316',bg:'radial-gradient(ellipse 90% 50% at 50% 0%,rgba(200,80,20,.2),transparent)',pattern:''},
+  purple:{name:'Mor Gece',css:'--bg:#0d0a1a;--surface:#160f28;--surface2:#1f1438;--accent:#a855f7',bg:'radial-gradient(ellipse 70% 60% at 30% 0%,rgba(120,40,200,.2),transparent)',pattern:''},
+  rose:{name:'Pembe',css:'--bg:#1a0a10;--surface:#220f16;--surface2:#2d151e;--accent:#f43f5e',bg:'radial-gradient(ellipse 70% 60% at 70% 10%,rgba(200,40,80,.2),transparent)',pattern:''},
+  ocean:{name:'Okyanus',css:'--bg:#050f1a;--surface:#0a1a28;--surface2:#0f2438;--accent:#06b6d4',bg:'radial-gradient(ellipse 80% 60% at 50% 100%,rgba(6,100,200,.2),transparent)',pattern:''},
+  gold:{name:'Altın',css:'--bg:#100e00;--surface:#1a1600;--surface2:#261f00;--accent:#f59e0b',bg:'radial-gradient(ellipse 70% 50% at 50% 0%,rgba(180,140,0,.2),transparent)',pattern:''},
+  arctic:{name:'Kutup',css:'--bg:#0a0f14;--surface:#101820;--surface2:#16232e;--accent:#7dd3fc',bg:'radial-gradient(ellipse 80% 60% at 50% 0%,rgba(100,180,240,.12),transparent)',pattern:''},
+  ember:{name:'Kor',css:'--bg:#120800;--surface:#1c0e00;--surface2:#261500;--accent:#ef4444',bg:'radial-gradient(ellipse 70% 50% at 50% 0%,rgba(200,60,20,.2),transparent)',pattern:''},
+  dots:{name:'Noktalar',css:'',bg:'radial-gradient(ellipse 55% 40% at 15% 8%,rgba(59,130,246,.08),transparent)',pattern:'radial-gradient(circle,rgba(59,130,246,.15) 1px,transparent 1px) 0 0 / 20px 20px'},
+  lines:{name:'Çizgiler',css:'',bg:'',pattern:'repeating-linear-gradient(45deg,rgba(59,130,246,.05) 0,rgba(59,130,246,.05) 1px,transparent 1px,transparent 14px)'},
+  grid:{name:'Izgara',css:'',bg:'',pattern:'linear-gradient(rgba(59,130,246,.07) 1px,transparent 1px) 0 0/24px 24px,linear-gradient(90deg,rgba(59,130,246,.07) 1px,transparent 1px) 0 0/24px 24px'},
+  stars:{name:'Yıldızlar',css:'',bg:'radial-gradient(ellipse 60% 40% at 20% 20%,rgba(167,139,250,.15),transparent)',pattern:'radial-gradient(circle,rgba(255,255,255,.18) 1px,transparent 1px) 0 0/30px 30px,radial-gradient(circle,rgba(255,255,255,.08) 1px,transparent 1px) 15px 15px/30px 30px'},
+  circuit:{name:'Devre',css:'--accent:#22c55e',bg:'',pattern:'linear-gradient(rgba(52,211,153,.1) 1px,transparent 1px) 0 0/50px 50px,linear-gradient(90deg,rgba(52,211,153,.1) 1px,transparent 1px) 0 0/50px 50px,linear-gradient(rgba(52,211,153,.04) 1px,transparent 1px) 0 0/10px 10px,linear-gradient(90deg,rgba(52,211,153,.04) 1px,transparent 1px) 0 0/10px 10px'},
+  bubble:{name:'Baloncuk',css:'',bg:'',pattern:'radial-gradient(circle 8px at 10px 10px,rgba(59,130,246,.14),transparent) 0 0/32px 32px,radial-gradient(circle 5px at 22px 26px,rgba(167,139,250,.1),transparent) 0 0/32px 32px'},
+  diamond:{name:'Elmas',css:'',bg:'',pattern:'linear-gradient(45deg,rgba(59,130,246,.08) 25%,transparent 25%,transparent 75%,rgba(59,130,246,.08) 75%),linear-gradient(45deg,rgba(59,130,246,.08) 25%,transparent 25%,transparent 75%,rgba(59,130,246,.08) 75%) 10px 10px;background-size:20px 20px'},
+  neon:{name:'Neon',css:'--accent:#00ff88;--ab:#00ff88;--a2:#ff00ff',bg:'radial-gradient(ellipse 50% 40% at 30% 20%,rgba(0,255,136,.12),transparent),radial-gradient(ellipse 50% 40% at 70% 80%,rgba(255,0,255,.1),transparent)',pattern:''},
+  turkey:{name:'🇹🇷 Türk Bayrağı',css:'--bg:#c8102e;--surface:#a00020;--surface2:#800010;--accent:#ffffff;--ab:#ffffff;--text:#ffffff;--text2:rgba(255,255,255,.7);--text3:rgba(255,255,255,.4);--border:rgba(255,255,255,.15)',bg:'',pattern:''},
+  space:{name:'🚀 Uzay',css:'--bg:#000008;--surface:#080818;--surface2:#101028;--accent:#c084fc',bg:'radial-gradient(ellipse 60% 40% at 30% 30%,rgba(120,40,200,.2),transparent),radial-gradient(ellipse 40% 40% at 70% 70%,rgba(59,130,246,.15),transparent)',pattern:'radial-gradient(circle,rgba(255,255,255,.2) 1px,transparent 1px) 0 0/25px 25px,radial-gradient(circle,rgba(255,255,255,.1) 1px,transparent 1px) 10px 12px/40px 40px,radial-gradient(circle,rgba(200,132,252,.3) 1px,transparent 1px) 5px 5px/60px 60px'},
+};
+const THEME_KEYS=Object.keys(THEMES);
+
+// Theme preview colors
+const THEME_PREVIEW={
+  default:'#07090f',midnight:'#050a1a',forest:'#071410',sunset:'#1a0a0a',purple:'#0d0a1a',
+  rose:'#1a0a10',ocean:'#050f1a',gold:'#100e00',arctic:'#0a0f14',ember:'#120800',
+  dots:'#07090f',lines:'#07090f',grid:'#07090f',stars:'#07090f',circuit:'#07090f',
+  bubble:'#07090f',diamond:'#07090f',neon:'#07090f',turkey:'#c8102e',space:'#000008'
+};
+const THEME_ACCENT={
+  default:'#3b82f6',midnight:'#4f9eff',forest:'#22c55e',sunset:'#f97316',purple:'#a855f7',
+  rose:'#f43f5e',ocean:'#06b6d4',gold:'#f59e0b',arctic:'#7dd3fc',ember:'#ef4444',
+  dots:'#3b82f6',lines:'#3b82f6',grid:'#3b82f6',stars:'#a78bfa',circuit:'#22c55e',
+  bubble:'#3b82f6',diamond:'#3b82f6',neon:'#00ff88',turkey:'#ffffff',space:'#c084fc'
 };
 
-const THEME_ORDER = ['midnight','forest','sunset','purple','rose','ocean','gold','arctic','ember','default','dots','lines','grid','hexagon','waves','stars','circuit','bubble','diamond','neon'];
-
-function applyTheme() {
-  // Dark/light
-  document.body.classList.toggle('light', CFG.theme==='light');
-  // Chat theme
-  const t = CHAT_THEMES[CFG.chatTheme] || CHAT_THEMES.default;
-  const layer = document.getElementById('bgLayer');
-  // Apply CSS vars
-  const root = document.documentElement;
-  // Reset first
-  ['--bg','--surface','--surface2','--accent','--a2'].forEach(v => root.style.removeProperty(v));
-  if(t.css) {
-    t.css.split(';').forEach(pair => {
-      const [k,v] = pair.split(':');
-      if(k&&v) root.style.setProperty(k.trim(), v.trim());
-    });
+function applyTheme(){
+  document.body.classList.toggle('light',CFG.theme==='light');
+  const t=THEMES[CFG.chatTheme]||THEMES.default;
+  const root=document.documentElement;
+  THEME_KEYS.forEach(()=>{});
+  // Reset CSS vars
+  ['--bg','--surface','--surface2','--accent','--ab','--a2','--text','--text2','--text3','--border'].forEach(v=>root.style.removeProperty(v));
+  if(t.css) t.css.split(';').forEach(p=>{const[k,v]=p.split(':');if(k&&v)root.style.setProperty(k.trim(),v.trim());});
+  const layer=document.getElementById('bgLayer');
+  if(layer){
+    let s='';
+    if(t.bg) s+=`background:${t.bg};`;
+    if(t.pattern) s+=`background-image:${t.pattern.split(';background-size')[0]};`;
+    const bsMatch=t.pattern?.match(/;background-size:(.+)/);
+    if(bsMatch) s+=`background-size:${bsMatch[1]};`;
+    layer.style.cssText=s;
   }
-  // Background layer
-  let layerStyle = '';
-  if(t.bg) layerStyle += `background: ${t.bg};`;
-  if(t.pattern) layerStyle += `background-image: ${t.pattern};`;
-  layer.style.cssText = layerStyle;
 }
-applyTheme();
 
 // ── STYLES ──
-const STYLES = {
-  normal:  { name:'Normal',    icon:'😊', desc:'Dengeli ve samimi',     p:'Kısa ve öz cevap ver, 2-4 cümle yeterli.' },
-  expert:  { name:'Uzman',     icon:'🎓', desc:'Detaylı ve akademik',    p:'Detaylı açıkla ama gereksiz uzatma.' },
-  casual:  { name:'Rahat',     icon:'😎', desc:'Arkadaşça ve kısa',      p:'Çok kısa, samimi, biraz espri. 1-2 cümle.' },
-  concise: { name:'Özlü',      icon:'⚡', desc:'Tek cümle',              p:'Tek cümleyle cevap ver.' },
-  teacher: { name:'Öğretmen',  icon:'📚', desc:'Adım adım açıklayan',    p:'Adım adım, örneklerle açıkla.' },
-  funny:   { name:'Eğlenceli', icon:'😂', desc:'Komik ve neşeli',        p:'Kısa tut, mutlaka espri ekle.' },
+const STYLES={
+  normal: {name:'Normal',icon:'😊',desc:'Dengeli ve samimi',p:'Kısa ve öz cevap ver, 2-4 cümle yeterli. Samimi ol.'},
+  expert: {name:'Uzman',icon:'🎓',desc:'Detaylı ve akademik',p:'Detaylı açıkla ama gereksiz uzatma.'},
+  casual: {name:'Rahat',icon:'😎',desc:'Arkadaşça ve kısa',p:'Çok kısa, samimi, biraz espri. 1-2 cümle.'},
+  concise:{name:'Özlü',icon:'⚡',desc:'Tek cümle',p:'Tek cümleyle cevap ver. Daha fazla yazma.'},
+  teacher:{name:'Öğretmen',icon:'📚',desc:'Adım adım açıklayan',p:'Adım adım, örneklerle açıkla. Sabırlı ol.'},
+  funny:  {name:'Eğlenceli',icon:'😂',desc:'Komik ve neşeli',p:'Kısa tut, mutlaka espri ekle. Neşeli ol.'},
 };
 
 // ── SECTIONS ──
-const SECS = {
-  genel: {
-    label:'🌐 Genel Sohbet', bg:'rgba(59,130,246,.1)', br:'rgba(59,130,246,.25)', c:'#60a5fa',
-    chips:['Selam! Nasılsın?','Bana bir fıkra anlat','İlginç bir bilgi ver','Ne konuşalım?'],
-    sys:()=>`Sen Kumpir adında sıcakkanlı, espritüel ve akıcı sohbet eden bir yapay zeka asistanısın.
+const un=()=>CFG.userName||'arkadaş';
+const SECS={
+  genel:{label:'🌐 Genel Sohbet',bg:'rgba(59,130,246,.1)',br:'rgba(59,130,246,.25)',c:'#60a5fa',
+    chips:()=>[`Selam ${un()}! Nasılsın?`,'Bana bir fıkra anlat','İlginç bir bilgi ver','Ne konuşalım?'],
+    sys:()=>`Sen Kumpir adında sıcakkanlı, espritüel ve akıllı bir yapay zeka asistanısın.
+Kullanıcının adı ${un()}. Ona her zaman "${un()}" diye hitap et.
 KURAL 1: SADECE TÜRKÇE konuş. Tek bir yabancı kelime bile kullanma.
-KURAL 2: Kim seni yaptı, kim oluşturdu gibi sorularda sadece "Enes tarafından oluşturuldum." de. Başka hiçbir mesajda bunu söyleme.
-KURAL 3: Gerçek bir arkadaş gibi sohbet et. "Selam" derlerse "Selam! Nasılsın?" gibi karşılık ver.
-KURAL 4: ${STYLES[CFG.style].p}`
-  },
-  matematik: {
-    label:'🧮 Matematik', bg:'rgba(245,158,11,.1)', br:'rgba(245,158,11,.3)', c:'#f59e0b',
-    chips:['15 × 27 = ?','x² + 5x + 6 = 0','Dairenin alanı?','Türev nedir?'],
-    sys:()=>`Sen Kumpir'in Matematik bölümüsün. SADECE TÜRKÇE konuş.
-Sadece matematik sorularına adım adım cevap ver. Matematik dışı: "Bu bölüm yalnızca matematik içindir." de.`
-  },
-  planlama: {
-    label:'🗂️ Planlı Düşünme', bg:'rgba(52,211,153,.1)', br:'rgba(52,211,153,.25)', c:'#34d399',
-    chips:['Uygulama yapmak istiyorum','Sınava hazırlık planı','Kilo vermek istiyorum','İş kurma planı'],
-    sys:()=>`Sen Kumpir'in Planlama bölümüsün. SADECE TÜRKÇE konuş.
-Hedef→aşamalar→adımlar→zaman→riskler şeklinde somut plan yap. ${STYLES[CFG.style].p}`
-  },
-  kodlama: {
-    label:'💻 Kodlama', bg:'rgba(167,139,250,.1)', br:'rgba(167,139,250,.25)', c:'#a78bfa',
-    chips:['Python for döngüsü','Hata düzelt','React component','SQL JOIN'],
-    sys:()=>`Sen Kumpir'in Kodlama bölümüsün. Açıklamalar TÜRKÇE, kodlar İngilizce.
-Kod yaz, hataları düzelt, açıkla. Sadece kodlama konularında cevap ver.`
-  },
-  hizli: {
-    label:'⚡ Hızlı Düşünme', bg:'rgba(244,114,182,.1)', br:'rgba(244,114,182,.25)', c:'#f472b6',
-    chips:['En büyük ülke?','Pi sayısı?','Türkiye nüfusu?','1 mil kaç km?'],
-    sys:()=>`Sen Kumpir'in Hızlı Düşünme bölümüsün. SADECE TÜRKÇE. Maksimum 1-2 cümle. Giriş yok. Direkt cevap.`
-  },
-  gorsel: {
-    label:'🎨 Görsel Oluştur', bg:'rgba(244,63,94,.1)', br:'rgba(244,63,94,.25)', c:'#f43f5e',
-    chips:['Araba fotoğrafı oluştur','Uzay manzarası yap','Kedi çizimi oluştur','Orman görseli'],
-    sys:()=>`Sen Kumpir'in Görsel bölümüsün. SADECE TÜRKÇE konuş. Görsel isteklerine kısa Türkçe yanıt ver.`
-  },
-  dil: {
-    label:'🌍 Dil & Çeviri', bg:'rgba(251,191,36,.1)', br:'rgba(251,191,36,.25)', c:'#fbbf24',
-    chips:['Merhaba\'yı İspanyolcaya çevir','İngilizce "hello" ne demek?','Fransızca nasıl öğrenirim?','Japonca merhaba nasıl denir?'],
-    sys:()=>`Sen Kumpir'in Dil ve Çeviri bölümüsün. Açıklamaları SADECE TÜRKÇE yaz, çeviriler hedef dilde olabilir.
-Kelimeleri/cümleleri çevir, dil bilgisi ver, telaffuz açıkla.
-Format: Türkçe metin → [dil adı]: çeviri → kısa açıklama.`
-  }
+KURAL 2: Kim seni yaptı sorusunda: "Enes tarafından oluşturuldum." de. Başka mesajda bunu söyleme.
+KURAL 3: Gerçek bir arkadaş gibi sohbet et. Selam derlerse sıcakça karşılık ver.
+KURAL 4: ${STYLES[CFG.style].p}`},
+  matematik:{label:'🧮 Matematik',bg:'rgba(245,158,11,.1)',br:'rgba(245,158,11,.3)',c:'#f59e0b',
+    chips:()=>['15 × 27 = ?','x² + 5x + 6 = 0','Dairenin alanı?','Türev nedir?'],
+    sys:()=>`Sen Kumpir'in Matematik bölümüsün. SADECE TÜRKÇE konuş. Kullanıcı adı: ${un()}.
+Sadece matematik sorularına adım adım cevap ver. Matematik dışı: "Bu bölüm yalnızca matematik içindir." de.`},
+  planlama:{label:'🗂️ Planlı Düşünme',bg:'rgba(52,211,153,.1)',br:'rgba(52,211,153,.25)',c:'#34d399',
+    chips:()=>['Uygulama yapmak istiyorum','Sınava hazırlık planı','Kilo vermek istiyorum','İş kurma planı'],
+    sys:()=>`Sen Kumpir'in Planlama bölümüsün. SADECE TÜRKÇE. Kullanıcı adı: ${un()}.
+Hedef→aşamalar→adımlar→zaman→riskler şeklinde somut plan yap. ${STYLES[CFG.style].p}`},
+  kodlama:{label:'💻 Kodlama',bg:'rgba(167,139,250,.1)',br:'rgba(167,139,250,.25)',c:'#a78bfa',
+    chips:()=>['Python for döngüsü','Hata düzelt','React component','SQL JOIN'],
+    sys:()=>`Sen Kumpir'in Kodlama bölümüsün. Açıklamalar TÜRKÇE, kodlar İngilizce olabilir. Kullanıcı adı: ${un()}.
+Kod yaz, hataları düzelt, açıkla. Sadece kodlama konularında cevap ver.`},
+  hizli:{label:'⚡ Hızlı Düşünme',bg:'rgba(244,114,182,.1)',br:'rgba(244,114,182,.25)',c:'#f472b6',
+    chips:()=>['En büyük ülke?','Pi sayısı?','Türkiye nüfusu?','1 mil kaç km?'],
+    sys:()=>`Sen Kumpir'in Hızlı Düşünme bölümüsün. SADECE TÜRKÇE. Maksimum 1-2 cümle. Giriş yok. Direkt cevap.`},
+  gorsel:{label:'🎨 Görsel Oluştur',bg:'rgba(244,63,94,.1)',br:'rgba(244,63,94,.25)',c:'#f43f5e',
+    chips:()=>['Araba fotoğrafı oluştur','Uzay manzarası yap','Kedi çizimi oluştur','Orman görseli'],
+    sys:()=>`Sen Kumpir'in Görsel bölümüsün. SADECE TÜRKÇE. Kullanıcı adı: ${un()}. Görsel isteklerine kısa samimi yanıt ver.`},
+  dil:{label:'🌍 Dil & Çeviri',bg:'rgba(251,191,36,.1)',br:'rgba(251,191,36,.25)',c:'#fbbf24',
+    chips:()=>['Merhaba\'yı İspanyolcaya çevir','İngilizce "hello" ne demek?','Fransızca nasıl öğrenirim?','Japonca merhaba?'],
+    sys:()=>`Sen Kumpir'in Dil ve Çeviri bölümüsün. Açıklamalar TÜRKÇE, çeviriler hedef dilde. Kullanıcı adı: ${un()}.
+Kelimeleri/cümleleri çevir, dil bilgisi ver, telaffuz açıkla.`},
 };
 
-let cur='genel', hist={}, loading=false, recog=null, listening=false, uploadedImg=null;
+let cur='genel',hist={},loading=false,recog=null,listening=false,uploadedImg=null;
 Object.keys(SECS).forEach(s=>hist[s]=[]);
-hist.dil=[];
 
 // ── SIDEBAR ──
-function toggleSidebar(){ document.getElementById('sidebar').classList.toggle('open'); document.getElementById('overlay').classList.toggle('show'); }
-function closeSidebar(){ document.getElementById('sidebar').classList.remove('open'); document.getElementById('overlay').classList.remove('show'); }
+function toggleSidebar(){document.getElementById('sidebar').classList.toggle('open');document.getElementById('overlay').classList.toggle('show');}
+function closeSidebar(){document.getElementById('sidebar').classList.remove('open');document.getElementById('overlay').classList.remove('show');}
 
 // ── SECTION SWITCH ──
 function sw(btn){
+  if(!btn) return;
   document.querySelectorAll('.sbtn').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
   cur=btn.dataset.s;
   closeSidebar();
   const msgs=document.getElementById('messages');
   const ia=document.getElementById('inputArea');
+  const qb=document.getElementById('quickBar');
 
   if(cur==='ayarlar'){
     document.getElementById('badge').textContent='⚙️ Ayarlar';
     document.getElementById('badge').style.cssText='background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:var(--text2);display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:30px;font-size:12px;font-weight:700;font-family:Syne,sans-serif;';
     msgs.innerHTML=buildSettings();
     ia.style.display='none';
-    document.getElementById('quickBar').style.display='none';
+    qb.style.display='none';
     return;
   }
 
   ia.style.display='';
-  updateQuickBar();
+  qb.style.display='flex';
+
   const sec=SECS[cur];
   const b=document.getElementById('badge');
   b.textContent=sec.label;
@@ -442,40 +570,42 @@ function sw(btn){
   const h=hist[cur]||[];
   if(h.length===0){
     const em=sec.label.split(' ')[0];
+    const chips=sec.chips();
     msgs.innerHTML=`<div class="welcome" id="welcome">
       <div class="wicon">${em}</div>
       <h2>${sec.label.split(' ').slice(1).join(' ')}</h2>
-      <p style="color:var(--text3);font-size:12.5px;max-width:290px;line-height:1.6">Bu bölümde soru sorabilirsin!</p>
-      <div class="chips">${sec.chips.map(c=>`<div class="chip" onclick="sendChip(this)">${c}</div>`).join('')}</div>
+      <p style="color:var(--text3);font-size:12.5px;max-width:290px;line-height:1.6">Merhaba ${un()}! Bu bölümde soru sorabilirsin.</p>
+      <div class="chips">${chips.map(c=>`<div class="chip" onclick="sendChip(this)">${c}</div>`).join('')}</div>
     </div>`;
   } else {
     h.forEach(m=>{
       if(m.type==='img') renderImg(m.url,m.prompt);
-      else renderMsg(m.role==='user'?'user':'ai', m.content, m.thumb);
+      else renderMsg(m.role==='user'?'user':'ai',m.content,m.thumb);
     });
     msgs.scrollTop=99999;
   }
 }
 
-// ── RENDER MESSAGE ──
-function renderMsg(type, text, thumb){
+// ── RENDER ──
+function renderMsg(type,text,thumb){
   document.getElementById('welcome')?.remove();
   const msgs=document.getElementById('messages');
   const d=document.createElement('div');
   d.className=`msg ${type}`;
-  const thumbHtml = thumb ? `<img src="${thumb}" class="vision-thumb" alt="yüklenen görsel">` : '';
+  const thumbHtml=thumb?`<img src="${thumb}" class="vision-thumb">`:'' ;
+  const initials=(CFG.userName||'K')[0].toUpperCase();
   d.innerHTML=`
-    <div class="avatar">${type==='ai'?'🥔':'👤'}</div>
+    <div class="avatar">${type==='ai'?'🥔':initials}</div>
     <div class="msg-inner">
-      <div class="mname">${type==='ai'?'Kumpir AI':'Sen'}</div>
+      <div class="mname">${type==='ai'?'Kumpir AI':CFG.userName||'Sen'}</div>
       <div class="bubble">${thumbHtml}${fmtText(text)}</div>
-      ${type==='ai'&&CFG.tts?`<button class="speak-btn" onclick="speak(this,'${encodeURIComponent(text)}')">🔊</button>`:''}
+      ${type==='ai'&&CFG.tts?`<button class="speak-btn" onclick="speakBtn(this,'${encodeURIComponent(text)}')">🔊 Sesli Oku</button>`:''}
     </div>`;
   msgs.appendChild(d);
   msgs.scrollTop=99999;
 }
 
-function renderImg(url, prompt){
+function renderImg(url,prompt){
   document.getElementById('welcome')?.remove();
   const msgs=document.getElementById('messages');
   const d=document.createElement('div');
@@ -486,11 +616,11 @@ function renderImg(url, prompt){
     <div class="msg-inner">
       <div class="mname">Kumpir AI</div>
       <div class="bubble">
-        <div style="font-size:11.5px;color:var(--text3);margin-bottom:6px">🎨 "${prompt}"</div>
-        <div id="${id}_l" style="color:var(--text3);font-size:12px">⏳ Görsel yükleniyor, bekle...</div>
+        <div style="font-size:11.5px;color:var(--text3);margin-bottom:6px">🎨 Oluşturulan: "${prompt}"</div>
+        <div id="${id}_l" style="color:var(--text3);font-size:12.5px;padding:4px 0">⏳ Görsel yükleniyor (10-30 sn)...</div>
         <img id="${id}" src="${url}" class="gen-img" style="display:none"
           onload="this.style.display='block';document.getElementById('${id}_l').style.display='none';document.getElementById('messages').scrollTop=99999"
-          onerror="document.getElementById('${id}_l').textContent='❌ Görsel yüklenemedi. Tekrar dene.'">
+          onerror="document.getElementById('${id}_l').textContent='❌ Görsel yüklenemedi. Farklı bir konu dene.'">
       </div>
     </div>`;
   msgs.appendChild(d);
@@ -505,79 +635,103 @@ function fmtText(t){
   t=t.replace(/\n/g,'<br>');
   return t;
 }
-function esc(t){ return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function esc(t){return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
 
 // ── TYPING ──
 function showTyping(){
   document.getElementById('welcome')?.remove();
   const msgs=document.getElementById('messages');
   const d=document.createElement('div');
-  d.className='msg ai'; d.id='typing';
+  d.className='msg ai';d.id='typing';
   d.innerHTML=`<div class="avatar">🥔</div><div class="msg-inner"><div class="mname">Kumpir AI</div><div class="bubble"><div class="tdots"><div class="tdot"></div><div class="tdot"></div><div class="tdot"></div></div></div></div>`;
-  msgs.appendChild(d);
-  msgs.scrollTop=99999;
+  msgs.appendChild(d);msgs.scrollTop=99999;
 }
-function removeTyping(){ document.getElementById('typing')?.remove(); }
+function removeTyping(){document.getElementById('typing')?.remove();}
 
 // ── IMAGE UPLOAD ──
 function handleImgUpload(e){
-  const f=e.target.files[0]; if(!f) return;
+  const f=e.target.files[0];if(!f)return;
   const r=new FileReader();
   r.onload=ev=>{
     const dataUrl=ev.target.result;
-    uploadedImg={base64:dataUrl.split(',')[1], mimeType:f.type, dataUrl};
+    uploadedImg={base64:dataUrl.split(',')[1],mimeType:f.type,dataUrl};
     document.getElementById('imgThumb').src=dataUrl;
-    document.getElementById('imgName').textContent=f.name;
-    document.getElementById('imgPreviewBar').style.display='block';
+    document.getElementById('imgNameLbl').textContent=f.name;
+    document.getElementById('imgBar').style.display='block';
   };
   r.readAsDataURL(f);
   e.target.value='';
 }
-function removeImg(){ uploadedImg=null; document.getElementById('imgPreviewBar').style.display='none'; }
+function removeImg(){uploadedImg=null;document.getElementById('imgBar').style.display='none';}
 
-// ── IMAGE KEYWORDS ──
-const IMG_KW=['fotoğraf','görsel','resim','çizim','oluştur','yap','çiz','üret','illüstrasyon'];
-const IMG_OBJ=['araba','kedi','köpek','at','kuş','ev','ağaç','dağ','deniz','uzay','insan','hayvan','manzara','çiçek','şehir','robot','ejderha','orman','göl','şelale','aslan','kaplan','balık','ay','güneş','yıldız'];
+// ── IMAGE GENERATION ──
+const IMG_KW=['fotoğraf','görsel','resim','çizim','oluştur','yap','çiz','üret','illüstrasyon','tasarla'];
+const IMG_OBJ=['araba','kedi','köpek','at','kuş','ev','ağaç','dağ','deniz','uzay','insan','hayvan','manzara','çiçek','şehir','robot','ejderha','orman','göl','şelale','aslan','kaplan','balık','ay','güneş','yıldız','köprü','bulut','volkan','ada'];
 const isImgReq=t=>IMG_KW.some(k=>t.toLowerCase().includes(k))&&(cur==='gorsel'||IMG_OBJ.some(k=>t.toLowerCase().includes(k)));
 
+async function generateImage(text){
+  // Translate to English
+  try{
+    const tr=await fetch('/api/chat',{
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        max_tokens:80,
+        system:'You are a translator. Translate the following Turkish text to English for AI image generation. Return ONLY the English prompt, concise and descriptive, nothing else.',
+        messages:[{role:'user',content:text}]
+      })
+    });
+    const td=await tr.json();
+    let eng=((td.content?.[0]?.text)||text).trim().replace(/^["']|["']$/g,'').replace(/\.$/, '');
+    if(!eng||eng.length<3) eng=text;
+    const prompt=eng+', high quality, detailed, digital art, vibrant colors, professional illustration';
+    const encoded=encodeURIComponent(prompt);
+    const seed=Math.floor(Math.random()*999999);
+    return {
+      url:`https://image.pollinations.ai/prompt/${encoded}?width=512&height=512&nologo=true&nofeed=true&seed=${seed}`,
+      prompt:eng
+    };
+  }catch(e){
+    const encoded=encodeURIComponent(text+', high quality digital art');
+    const seed=Math.floor(Math.random()*999999);
+    return {url:`https://image.pollinations.ai/prompt/${encoded}?width=512&height=512&nologo=true&seed=${seed}`,prompt:text};
+  }
+}
+
 // ── SEND ──
-async function send(){
-  if(loading||cur==='ayarlar') return;
+async function doSend(){
+  if(loading||cur==='ayarlar')return;
   const inp=document.getElementById('ibox');
   const text=inp.value.trim();
-  if(!text&&!uploadedImg) return;
+  if(!text&&!uploadedImg)return;
 
-  inp.value=''; inp.style.height='auto';
+  inp.value='';inp.style.height='auto';
   loading=true;
   document.getElementById('sendBtn').disabled=true;
-
   document.getElementById('welcome')?.remove();
-  const msgs=document.getElementById('messages');
 
-  // User bubble
+  const msgs=document.getElementById('messages');
   const ud=document.createElement('div');
   ud.className='msg user';
-  const thumbHtml=uploadedImg?`<img src="${uploadedImg.dataUrl}" class="vision-thumb" alt="">`:'' ;
-  ud.innerHTML=`<div class="avatar">👤</div><div class="msg-inner"><div class="mname" style="color:var(--text3)">Sen</div><div class="bubble">${thumbHtml}${text?esc(text):''}</div></div>`;
-  msgs.appendChild(ud);
-  msgs.scrollTop=99999;
+  const initials=(CFG.userName||'K')[0].toUpperCase();
+  const thumbHtml=uploadedImg?`<img src="${uploadedImg.dataUrl}" class="vision-thumb">`:'' ;
+  ud.innerHTML=`<div class="avatar">${initials}</div><div class="msg-inner"><div class="mname" style="color:var(--text3)">${CFG.userName||'Sen'}</div><div class="bubble">${thumbHtml}${text?esc(text):''}</div></div>`;
+  msgs.appendChild(ud);msgs.scrollTop=99999;
 
-  if(!hist[cur]) hist[cur]=[];
-  hist[cur].push({role:'user', content:text||'(Görsel paylaşıldı)', thumb:uploadedImg?.dataUrl});
-
+  if(!hist[cur])hist[cur]=[];
+  hist[cur].push({role:'user',content:text||'(Görsel paylaşıldı)',thumb:uploadedImg?.dataUrl});
   showTyping();
 
-  // Vision (uploaded image)
+  // Vision
   if(uploadedImg){
     const img={...uploadedImg};
     removeImg();
     try{
       const r=await fetch('/api/vision',{
-        method:'POST', headers:{'Content-Type':'application/json'},
+        method:'POST',headers:{'Content-Type':'application/json'},
         body:JSON.stringify({
-          imageBase64:img.base64, mimeType:img.mimeType,
-          question:text||'Bu görseli Türkçe olarak detaylıca açıkla.',
-          system:`Sen Kumpir adında bir yapay zeka asistanısın. SADECE TÜRKÇE konuş. Görseli analiz et ve Türkçe açıkla. ${STYLES[CFG.style].p}`
+          imageBase64:img.base64,mimeType:img.mimeType,
+          question:text||`Bu görseli ${un()} için Türkçe olarak detaylıca açıkla.`,
+          system:`Sen Kumpir adında bir yapay zeka asistanısın. SADECE TÜRKÇE konuş. Kullanıcı adı ${un()}. Görseli analiz et ve Türkçe açıkla. ${STYLES[CFG.style].p}`
         })
       });
       const data=await r.json();
@@ -585,41 +739,21 @@ async function send(){
       const reply=data.content?.[0]?.text||'Görseli analiz edemedim.';
       hist[cur].push({role:'ai',content:reply});
       renderMsg('ai',reply);
-      if(CFG.tts) speakText(reply);
-    }catch(e){
-      removeTyping();
-      renderMsg('ai','Görsel analiz hatası: '+e.message);
-    }
-    loading=false; document.getElementById('sendBtn').disabled=false;
+      if(CFG.tts)speakText(reply);
+    }catch(e){removeTyping();renderMsg('ai','Görsel analiz hatası: '+e.message);}
+    loading=false;document.getElementById('sendBtn').disabled=false;
     return;
   }
 
   // Image generation
   if(isImgReq(text)){
     try{
-      const tr=await fetch('/api/chat',{
-        method:'POST', headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({
-          max_tokens:60,
-          system:'Translate the following Turkish image description to English for image generation. Return ONLY the English prompt, nothing else.',
-          messages:[{role:'user',content:text}]
-        })
-      });
-      const td=await tr.json();
-      const eng=((td.content?.[0]?.text)||text).trim().replace(/['".,!?]/g,'').substring(0,200);
-      const encoded=encodeURIComponent(eng+', digital art, vibrant colors, high quality, detailed illustration');
-      const seed=Math.floor(Math.random()*99999);
-      const imageUrl=`https://image.pollinations.ai/prompt/${encoded}?width=512&height=512&nologo=true&seed=${seed}`;
+      const {url,prompt}=await generateImage(text);
       removeTyping();
-      hist[cur].push({type:'img',url:imageUrl,prompt:eng});
-      renderImg(imageUrl,eng);
-      const reply='Görsel oluşturuluyor, yüklenmesi biraz sürebilir! 🎨';
-      hist[cur].push({role:'ai',content:reply});
-    }catch(e){
-      removeTyping();
-      renderMsg('ai','Görsel hatası: '+e.message);
-    }
-    loading=false; document.getElementById('sendBtn').disabled=false;
+      hist[cur].push({type:'img',url,prompt});
+      renderImg(url,prompt);
+    }catch(e){removeTyping();renderMsg('ai','Görsel hatası: '+e.message);}
+    loading=false;document.getElementById('sendBtn').disabled=false;
     return;
   }
 
@@ -628,159 +762,242 @@ async function send(){
   try{
     const apiMsgs=(hist[cur]||[]).slice(-14).filter(m=>m.role).map(m=>({
       role:m.role==='ai'?'assistant':'user',
-      content:typeof m.content==='string'?m.content:'(görsel)'
+      content:typeof m.content==='string'?m.content:'(görsel paylaşıldı)'
     }));
     const r=await fetch('/api/chat',{
-      method:'POST', headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({max_tokens:600, system:sec.sys(), messages:apiMsgs})
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({max_tokens:600,system:sec.sys(),messages:apiMsgs})
     });
     const data=await r.json();
     removeTyping();
     const reply=data.content?.[0]?.text||'Bir sorun oluştu.';
     hist[cur].push({role:'ai',content:reply});
     renderMsg('ai',reply);
-    if(CFG.tts) speakText(reply);
-  }catch(e){
-    removeTyping();
-    renderMsg('ai','Bağlantı hatası: '+e.message);
-  }
-  loading=false; document.getElementById('sendBtn').disabled=false;
+    if(CFG.tts)speakText(reply);
+  }catch(e){removeTyping();renderMsg('ai','Bağlantı hatası: '+e.message);}
+  loading=false;document.getElementById('sendBtn').disabled=false;
 }
 
 // ── TTS ──
 function speakText(text){
-  if(!window.speechSynthesis) return;
+  if(!window.speechSynthesis)return;
   window.speechSynthesis.cancel();
-  const clean=text.replace(/<[^>]+>/g,'').replace(/[*`#]/g,'');
+  const clean=text.replace(/<[^>]+>/g,'').replace(/[*`#_]/g,'');
   const u=new SpeechSynthesisUtterance(clean);
-  u.lang='tr-TR';
-  u.rate=CFG.ttsRate||1;
+  u.lang='tr-TR';u.rate=CFG.ttsRate||1;
   const voices=window.speechSynthesis.getVoices();
-  const trVoices=voices.filter(v=>v.lang.startsWith('tr'));
-  if(trVoices.length>0){
-    const pref=CFG.ttsVoice==='male'?trVoices.find(v=>v.name.toLowerCase().includes('male')||v.name.toLowerCase().includes('erkek')):trVoices.find(v=>v.name.toLowerCase().includes('female')||v.name.toLowerCase().includes('kadın'));
-    u.voice=pref||trVoices[0];
+  const trV=voices.filter(v=>v.lang.startsWith('tr'));
+  if(trV.length>0){
+    const pref=CFG.ttsVoice==='male'?trV.find(v=>/male|erkek/i.test(v.name)):trV.find(v=>/female|kadın/i.test(v.name));
+    u.voice=pref||trV[0];
   }
   window.speechSynthesis.speak(u);
 }
-
-function speak(btn, encoded){
+function speakBtn(btn,encoded){
   const text=decodeURIComponent(encoded);
-  if(window.speechSynthesis.speaking){ window.speechSynthesis.cancel(); return; }
+  if(window.speechSynthesis?.speaking){window.speechSynthesis.cancel();return;}
   speakText(text);
 }
 
 // ── MIC ──
 function toggleMic(){
   if(!('webkitSpeechRecognition' in window)&&!('SpeechRecognition' in window)){alert('Sesli giriş için Chrome kullan!');return;}
-  if(listening){ recog?.stop(); return; }
+  if(listening){recog?.stop();return;}
   const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
-  recog=new SR(); recog.lang='tr-TR'; recog.continuous=false; recog.interimResults=true;
-  recog.onstart=()=>{ listening=true; document.getElementById('micBtn').classList.add('on'); document.getElementById('micBtn').textContent='⏹️'; document.getElementById('vstat').classList.add('show'); };
-  recog.onresult=e=>{ const t=Array.from(e.results).map(r=>r[0].transcript).join(''); document.getElementById('ibox').value=t; autoResize(document.getElementById('ibox')); };
-  recog.onend=()=>{ listening=false; document.getElementById('micBtn').classList.remove('on'); document.getElementById('micBtn').textContent='🎤'; document.getElementById('vstat').classList.remove('show'); const v=document.getElementById('ibox').value.trim(); if(v) send(); };
-  recog.onerror=()=>{ listening=false; document.getElementById('micBtn').classList.remove('on'); document.getElementById('micBtn').textContent='🎤'; document.getElementById('vstat').classList.remove('show'); };
+  recog=new SR();recog.lang='tr-TR';recog.continuous=false;recog.interimResults=true;
+  const mb=document.getElementById('micBtn');
+  recog.onstart=()=>{listening=true;mb.classList.add('mic-on');mb.textContent='⏹️';document.getElementById('vstat').classList.add('show');};
+  recog.onresult=e=>{const t=Array.from(e.results).map(r=>r[0].transcript).join('');document.getElementById('ibox').value=t;autoResize(document.getElementById('ibox'));};
+  recog.onend=()=>{listening=false;mb.classList.remove('mic-on');mb.textContent='🎤';document.getElementById('vstat').classList.remove('show');const v=document.getElementById('ibox').value.trim();if(v)doSend();};
+  recog.onerror=()=>{listening=false;mb.classList.remove('mic-on');mb.textContent='🎤';document.getElementById('vstat').classList.remove('show');};
   recog.start();
 }
 
 // ── SETTINGS ──
 function buildSettings(){
-  return `<div class="set-panel">
+  const themePrev = THEME_PREVIEW[CFG.chatTheme]||'#07090f';
+  const themeAcc = THEME_ACCENT[CFG.chatTheme]||'#3b82f6';
+  const s = STYLES[CFG.style];
 
-  <div class="set-sec">
-    <div class="set-title">Görünüm</div>
-    <div class="set-row">
-      <div><div class="set-lbl">🌙 Koyu / Açık Tema</div><div class="set-sub">Arka plan rengini değiştir</div></div>
-      <button class="toggle ${CFG.theme==='dark'?'on':''}" id="thToggle" onclick="toggleTheme()"></button>
+  return `<div style="overflow-y:auto;-webkit-overflow-scrolling:touch;padding:0">
+
+  <!-- USER CARD -->
+  <div style="background:linear-gradient(135deg,rgba(59,130,246,.15),rgba(167,139,250,.1));border-bottom:1px solid var(--border);padding:20px 16px;display:flex;align-items:center;gap:14px">
+    <div style="width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--a2));display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:800;color:white;font-family:Syne,sans-serif;box-shadow:0 0 20px rgba(59,130,246,.35);flex-shrink:0">${(CFG.userName||'K')[0].toUpperCase()}</div>
+    <div style="flex:1;min-width:0">
+      <div style="font-family:Syne,sans-serif;font-weight:800;font-size:18px">${CFG.userName}</div>
+      <div style="font-size:11px;color:var(--text3);margin-top:2px">Kumpir AI kullanıcısı</div>
     </div>
-    <div class="set-row" style="cursor:pointer" onclick="openModal('themes')">
-      <div><div class="set-lbl">🎨 Sohbet Teması</div><div class="set-sub">Şu an: ${CHAT_THEMES[CFG.chatTheme]?.name||'Varsayılan'} · 20 tema</div></div>
-      <span style="color:var(--text3);font-size:20px">›</span>
+    <button onclick="changeName()" style="padding:7px 14px;border-radius:20px;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.08);color:var(--text2);cursor:pointer;font-size:12px;font-family:DM Sans,sans-serif;white-space:nowrap">✏️ Düzenle</button>
+  </div>
+
+  <!-- SETTINGS CARDS -->
+  <div style="padding:14px 12px;display:flex;flex-direction:column;gap:10px">
+
+  <!-- TEMA KARTI -->
+  <div onclick="openModal('themes')" style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:14px 16px;cursor:pointer;display:flex;align-items:center;gap:14px;transition:.15s" onmouseover="this.style.background='var(--surface2)'" onmouseout="this.style.background='var(--surface)'">
+    <div style="width:44px;height:44px;border-radius:12px;background:${themePrev};border:2px solid ${themeAcc};flex-shrink:0;position:relative;overflow:hidden">
+      <div style="position:absolute;bottom:4px;left:50%;transform:translateX(-50%);width:26px;height:3px;border-radius:2px;background:${themeAcc}"></div>
+    </div>
+    <div style="flex:1">
+      <div style="font-size:13.5px;font-weight:600">🎨 Sohbet Teması</div>
+      <div style="font-size:11px;color:var(--text3);margin-top:2px">${THEMES[CFG.chatTheme]?.name||'Varsayılan'} · 20 tema</div>
+    </div>
+    <div style="color:var(--text3);font-size:20px;flex-shrink:0">›</div>
+  </div>
+
+  <!-- KOYU/AÇIK -->
+  <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:14px 16px;display:flex;align-items:center;gap:14px">
+    <div style="width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,#1a1a2e,#eef2ff);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0">🌙</div>
+    <div style="flex:1">
+      <div style="font-size:13.5px;font-weight:600">Koyu / Açık Tema</div>
+      <div style="font-size:11px;color:var(--text3);margin-top:2px">${CFG.theme==='dark'?'Koyu mod aktif':'Açık mod aktif'}</div>
+    </div>
+    <button class="toggle ${CFG.theme==='dark'?'on':''}" id="thTgl" onclick="toggleTheme()"></button>
+  </div>
+
+  <!-- SES OKUMA -->
+  <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden">
+    <div style="padding:14px 16px;display:flex;align-items:center;gap:14px">
+      <div style="width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,rgba(52,211,153,.2),rgba(6,182,212,.2));display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0">🔊</div>
+      <div style="flex:1">
+        <div style="font-size:13.5px;font-weight:600">Sesli Okuma</div>
+        <div style="font-size:11px;color:var(--text3);margin-top:2px">Cevapları sesli okusun</div>
+      </div>
+      <button class="toggle ${CFG.tts?'on':''}" id="ttsTgl" onclick="toggleTTS()"></button>
+    </div>
+    <div style="border-top:1px solid var(--border);padding:10px 16px;display:flex;align-items:center;justify-content:space-between;gap:8px">
+      <span style="font-size:12.5px;color:var(--text2)">🎙️ Ses</span>
+      <select class="set-select" onchange="CFG.ttsVoice=this.value;saveCFG()">
+        <option value="female" ${CFG.ttsVoice==='female'?'selected':''}>Kadın</option>
+        <option value="male" ${CFG.ttsVoice==='male'?'selected':''}>Erkek</option>
+      </select>
+    </div>
+    <div style="border-top:1px solid var(--border);padding:10px 16px;display:flex;align-items:center;justify-content:space-between;gap:8px">
+      <span style="font-size:12.5px;color:var(--text2)">⏩ Hız</span>
+      <select class="set-select" onchange="CFG.ttsRate=parseFloat(this.value);saveCFG()">
+        <option value="0.7" ${CFG.ttsRate==0.7?'selected':''}>Yavaş</option>
+        <option value="1" ${CFG.ttsRate==1?'selected':''}>Normal</option>
+        <option value="1.3" ${CFG.ttsRate==1.3?'selected':''}>Hızlı</option>
+        <option value="1.6" ${CFG.ttsRate==1.6?'selected':''}>Çok Hızlı</option>
+      </select>
     </div>
   </div>
 
-  <div class="set-sec">
-    <div class="set-title">Sesli Okuma</div>
-    <div class="set-row">
-      <div><div class="set-lbl">🔊 Mesajları Sesli Oku</div><div class="set-sub">Kumpir cevaplarını sesli okur</div></div>
-      <button class="toggle ${CFG.tts?'on':''}" id="ttsToggle" onclick="toggleTTS()"></button>
+  <!-- KONUŞMA TARZI -->
+  <div onclick="openModal('style')" style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:14px 16px;cursor:pointer;display:flex;align-items:center;gap:14px;transition:.15s" onmouseover="this.style.background='var(--surface2)'" onmouseout="this.style.background='var(--surface)'">
+    <div style="width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,rgba(167,139,250,.2),rgba(236,72,153,.1));display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0">${s?.icon||'😊'}</div>
+    <div style="flex:1">
+      <div style="font-size:13.5px;font-weight:600">Konuşma Tarzı</div>
+      <div style="font-size:11px;color:var(--text3);margin-top:2px">${s?.name||'Normal'} — ${s?.desc||'Dengeli ve samimi'}</div>
     </div>
-    <div class="set-row" style="cursor:pointer" onclick="openModal('tts')">
-      <div><div class="set-lbl">⚙️ Ses Detay Ayarları</div><div class="set-sub">Cinsiyet, hız seçimi</div></div>
-      <span style="color:var(--text3);font-size:20px">›</span>
+    <div style="color:var(--text3);font-size:20px;flex-shrink:0">›</div>
+  </div>
+
+  <!-- TEHLİKELİ BUTONLAR -->
+  <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden">
+    <div style="padding:10px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px;border-bottom:1px solid var(--border)">
+      <div>
+        <div style="font-size:13px;font-weight:500">🗑️ Sohbet Geçmişini Temizle</div>
+        <div style="font-size:11px;color:var(--text3);margin-top:1px">Tüm konuşmalar silinir</div>
+      </div>
+      <button onclick="clearHistory()" style="padding:6px 14px;border-radius:20px;border:1px solid rgba(239,68,68,.3);background:rgba(239,68,68,.1);color:#ef4444;cursor:pointer;font-size:12px;white-space:nowrap">Temizle</button>
+    </div>
+    <div style="padding:10px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px">
+      <div>
+        <div style="font-size:13px;font-weight:500">🔄 Hesabı Sıfırla</div>
+        <div style="font-size:11px;color:var(--text3);margin-top:1px">İsim ve tüm ayarlar sıfırlanır</div>
+      </div>
+      <button onclick="resetAll()" style="padding:6px 14px;border-radius:20px;border:1px solid rgba(239,68,68,.3);background:rgba(239,68,68,.1);color:#ef4444;cursor:pointer;font-size:12px;white-space:nowrap">Sıfırla</button>
     </div>
   </div>
 
-  <div class="set-sec">
-    <div class="set-title">Konuşma Tarzı</div>
-    <div class="set-row" style="cursor:pointer" onclick="openModal('style')">
-      <div><div class="set-lbl">💬 Kumpir'in Tarzı</div><div class="set-sub">Şu an: ${STYLES[CFG.style]?.icon} ${STYLES[CFG.style]?.name} · ${STYLES[CFG.style]?.desc}</div></div>
-      <span style="color:var(--text3);font-size:20px">›</span>
+  <!-- HAKKINDA -->
+  <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden">
+    <div style="padding:10px 14px;font-family:Syne,sans-serif;font-size:9.5px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:var(--text3);border-bottom:1px solid var(--border)">Hakkında</div>
+    <div style="padding:12px 16px;display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--border)">
+      <span style="font-size:22px">🥔</span>
+      <div><div style="font-size:13px;font-weight:600">Kumpir AI</div><div style="font-size:11px;color:var(--text3)">Enes tarafından oluşturuldu</div></div>
+    </div>
+    <div style="padding:12px 16px;display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--border)">
+      <span style="font-size:22px">🤖</span>
+      <div><div style="font-size:13px;font-weight:600">Dil Modeli</div><div style="font-size:11px;color:var(--text3)">Groq · Llama 3.3 70B</div></div>
+    </div>
+    <div style="padding:12px 16px;display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--border)">
+      <span style="font-size:22px">🎨</span>
+      <div><div style="font-size:13px;font-weight:600">Görsel Üretim</div><div style="font-size:11px;color:var(--text3)">Pollinations AI (ücretsiz)</div></div>
+    </div>
+    <div style="padding:12px 16px;display:flex;align-items:center;gap:12px">
+      <span style="font-size:22px">🌐</span>
+      <div><div style="font-size:13px;font-weight:600">Sunucu</div><div style="font-size:11px;color:var(--text3)">Railway · Her zaman açık</div></div>
     </div>
   </div>
 
-  <div class="set-sec">
-    <div class="set-title">Hakkında</div>
-    <div class="set-row"><div><div class="set-lbl">🥔 Kumpir AI</div><div class="set-sub">Enes tarafından oluşturuldu</div></div></div>
-    <div class="set-row"><div><div class="set-lbl">🤖 Dil Modeli</div><div class="set-sub">Groq · Llama 3.3 70B Versatile</div></div></div>
-    <div class="set-row"><div><div class="set-lbl">🎨 Görsel Üretim</div><div class="set-sub">Pollinations AI (ücretsiz)</div></div></div>
-    <div class="set-row"><div><div class="set-lbl">🌐 Sunucu</div><div class="set-sub">Railway · Her zaman açık</div></div></div>
   </div>
-
 </div>`;
 }
 
-function toggleTheme(){ CFG.theme=CFG.theme==='dark'?'light':'dark'; saveCFG(); applyTheme(); document.getElementById('thToggle')?.classList.toggle('on',CFG.theme==='dark'); }
-function toggleTTS(){ CFG.tts=!CFG.tts; saveCFG(); document.getElementById('ttsToggle')?.classList.toggle('on',CFG.tts); }
-function selStyle(k,el){ CFG.style=k; saveCFG(); document.querySelectorAll('.sopt').forEach(e=>e.classList.remove('sel')); el.classList.add('sel'); }
-function selectChatTheme(k,el){ CFG.chatTheme=k; saveCFG(); applyTheme(); document.querySelectorAll('.tcard').forEach(e=>e.classList.remove('sel')); el.classList.add('sel'); }
-
-function sendChip(el){ document.getElementById('ibox').value=el.textContent; send(); }
-function handleKey(e){ if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();send();} }
-function autoResize(el){ el.style.height='auto'; el.style.height=Math.min(el.scrollHeight,110)+'px'; }
+function changeName(){
+  const n=prompt('Yeni adını gir:',CFG.userName);
+  if(n&&n.trim()){CFG.userName=n.trim();saveCFG();sw(document.querySelector('[data-s=ayarlar]'));}
+}
+function clearHistory(){if(confirm('Tüm sohbet geçmişi silinsin mi?')){Object.keys(SECS).forEach(s=>hist[s]=[]);sw(document.querySelector('.sbtn.active'));}}
+function resetAll(){if(confirm('Tüm ayarlar sıfırlansın mı?')){localStorage.removeItem('kumpir_cfg');location.reload();}}
+function toggleTheme(){CFG.theme=CFG.theme==='dark'?'light':'dark';saveCFG();applyTheme();document.getElementById('thTgl')?.classList.toggle('on',CFG.theme==='dark');}
+function toggleTTS(){CFG.tts=!CFG.tts;saveCFG();document.getElementById('ttsTgl')?.classList.toggle('on',CFG.tts);}
+function selStyle(k){CFG.style=k;saveCFG();closeModal();sw(document.querySelector('[data-s=ayarlar]'));}
+function selectTheme(k){CFG.chatTheme=k;saveCFG();applyTheme();closeModal();sw(document.querySelector('[data-s=ayarlar]'));}
 
 // ── MODAL ──
 function openModal(type){
-  const overlay=document.getElementById('modalOverlay');
   const title=document.getElementById('modalTitle');
   const body=document.getElementById('modalBody');
-  
+
   if(type==='themes'){
     title.textContent='🎨 Sohbet Temaları';
-    const tkeys=['midnight','forest','sunset','purple','rose','ocean','gold','arctic','ember','default','dots','lines','grid','hexagon','waves','stars','circuit','bubble','diamond','neon'];
-    body.innerHTML=`<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;padding:4px">
-      ${tkeys.map(k=>{
-        const t=CHAT_THEMES[k];
-        let bgStyle='#07090f';
-        if(t.css){const m=t.css.match(/--bg:([^;]+)/);if(m)bgStyle=m[1].trim();}
-        let accStyle='#3b82f6';
-        if(t.css){const m=t.css.match(/--accent:([^;]+)/);if(m)accStyle=m[1].trim();}
-        let patStyle='';
-        if(t.pattern){const p=t.pattern.split(';background-size')[0];patStyle=`background-image:${p};`;}
-        return `<div onclick="selectChatTheme('${k}',this);closeModal()" 
-          style="background:${bgStyle};${patStyle}border-radius:12px;cursor:pointer;border:2px solid ${CFG.chatTheme===k?'#3b82f6':'transparent'};aspect-ratio:1;display:flex;flex-direction:column;justify-content:flex-end;padding:6px;transition:.2s;overflow:hidden">
-          <div style="width:24px;height:3px;border-radius:2px;background:${accStyle};margin:0 auto 4px"></div>
-          <div style="font-size:9px;font-weight:700;color:white;text-shadow:0 1px 3px rgba(0,0,0,.8);text-align:center;font-family:Syne,sans-serif">${t.name}</div>
-        </div>`;
-      }).join('')}
-    </div>`;
+    const cards=THEME_KEYS.map(k=>{
+      const bg=THEME_PREVIEW[k]||'#07090f';
+      const acc=THEME_ACCENT[k]||'#3b82f6';
+      const t=THEMES[k];
+      let patStyle='';
+      if(t.pattern){
+        const p=t.pattern.split(';background-size')[0];
+        patStyle=`background-image:${p};`;
+        const bsM=t.pattern.match(/;background-size:(.+)/);
+        if(bsM) patStyle+=`background-size:${bsM[1]};`;
+      }
+      return `<div onclick="selectTheme('${k}')" class="tcard ${CFG.chatTheme===k?'sel':''}" style="background:${bg};${patStyle}">
+        <div class="tcard-check">✓</div>
+        <div class="tcard-label">${t.name}</div>
+        <div style="position:absolute;top:8px;left:8px;width:20px;height:3px;border-radius:2px;background:${acc}"></div>
+      </div>`;
+    }).join('');
+    body.innerHTML=`<div class="theme-grid">${cards}</div>`;
+  } else if(type==='style'){
+    title.textContent='💬 Konuşma Tarzı';
+    body.innerHTML=Object.entries(STYLES).map(([k,s])=>`
+      <div class="sopt ${CFG.style===k?'sel':''}" onclick="selStyle('${k}')">
+        <div class="sopt-icon">${s.icon}</div>
+        <div><div class="sopt-name">${s.name}</div><div class="sopt-desc">${s.desc}</div></div>
+        <div class="sopt-chk">✓</div>
+      </div>`).join('');
   } else if(type==='tts'){
     title.textContent='🔊 Ses Ayarları';
-    body.innerHTML=`<div style="display:flex;flex-direction:column;gap:0">
-      <div style="display:flex;align-items:center;justify-content:space-between;padding:14px;border-bottom:1px solid var(--border)">
-        <div><div style="font-size:13px;font-weight:500">Mesajları Sesli Oku</div><div style="font-size:11px;color:var(--text3);margin-top:2px">Kumpir cevapları sesli okur</div></div>
-        <button class="toggle ${CFG.tts?'on':''}" id="ttsToggle2" onclick="CFG.tts=!CFG.tts;saveCFG();this.classList.toggle('on',CFG.tts)"></button>
+    body.innerHTML=`<div style="padding:8px 0">
+      <div class="sopt" style="cursor:default">
+        <div><div class="sopt-name">Sesli Okuma</div><div class="sopt-desc">Kumpir cevaplarını okur</div></div>
+        <button class="toggle ${CFG.tts?'on':''}" onclick="CFG.tts=!CFG.tts;saveCFG();this.classList.toggle('on',CFG.tts)"></button>
       </div>
-      <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 14px;border-bottom:1px solid var(--border);gap:8px">
-        <div style="font-size:13px;font-weight:500">🎙️ Ses Cinsiyeti</div>
-        <select style="background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:6px 10px;border-radius:8px;font-size:12px;outline:none" onchange="CFG.ttsVoice=this.value;saveCFG()">
+      <div class="sopt" style="cursor:default">
+        <div class="sopt-name" style="flex:1">Cinsiyet</div>
+        <select class="set-select" onchange="CFG.ttsVoice=this.value;saveCFG()">
           <option value="female" ${CFG.ttsVoice==='female'?'selected':''}>Kadın</option>
           <option value="male" ${CFG.ttsVoice==='male'?'selected':''}>Erkek</option>
         </select>
       </div>
-      <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 14px;gap:8px">
-        <div style="font-size:13px;font-weight:500">⏩ Okuma Hızı</div>
-        <select style="background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:6px 10px;border-radius:8px;font-size:12px;outline:none" onchange="CFG.ttsRate=parseFloat(this.value);saveCFG()">
+      <div class="sopt" style="cursor:default">
+        <div class="sopt-name" style="flex:1">Hız</div>
+        <select class="set-select" onchange="CFG.ttsRate=parseFloat(this.value);saveCFG()">
           <option value="0.7" ${CFG.ttsRate==0.7?'selected':''}>Yavaş</option>
           <option value="1" ${CFG.ttsRate==1?'selected':''}>Normal</option>
           <option value="1.3" ${CFG.ttsRate==1.3?'selected':''}>Hızlı</option>
@@ -788,39 +1005,18 @@ function openModal(type){
         </select>
       </div>
     </div>`;
-  } else if(type==='style'){
-    title.textContent='💬 Konuşma Tarzı';
-    body.innerHTML=`<div style="display:flex;flex-direction:column;gap:2px;padding:4px">
-      ${Object.entries(STYLES).map(([k,s])=>`
-        <div onclick="selStyle('${k}',this);closeModal()" style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;cursor:pointer;border:1px solid ${CFG.style===k?'rgba(59,130,246,.4)':'transparent'};background:${CFG.style===k?'var(--surface2)':'transparent'}">
-          <div style="font-size:20px;width:26px;text-align:center">${s.icon}</div>
-          <div style="flex:1"><div style="font-size:13px;font-weight:600">${s.name}</div><div style="font-size:11px;color:var(--text3);margin-top:1px">${s.desc}</div></div>
-          ${CFG.style===k?'<div style="width:18px;height:18px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;font-size:10px;color:white">✓</div>':''}
-        </div>`).join('')}
-    </div>`;
   }
-  
-  overlay.classList.add('show');
+  document.getElementById('modalOverlay').classList.add('show');
 }
+function closeModal(){document.getElementById('modalOverlay').classList.remove('show');}
+function closeModalOut(e){if(e.target===document.getElementById('modalOverlay'))closeModal();}
 
-function closeModal(){ document.getElementById('modalOverlay').classList.remove('show'); }
-function closeModalOutside(e){ if(e.target===document.getElementById('modalOverlay')) closeModal(); }
+function sendChip(el){document.getElementById('ibox').value=el.textContent;doSend();}
+function handleKey(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();doSend();}}
+function autoResize(el){el.style.height='auto';el.style.height=Math.min(el.scrollHeight,110)+'px';}
 
-// Show/hide quick bar based on section
-function updateQuickBar(){
-  const qb=document.getElementById('quickBar');
-  if(cur==='ayarlar') qb.style.display='none';
-  else qb.style.display='flex';
-}
-
-// iOS keyboard fix
-if(window.visualViewport){
-  window.visualViewport.addEventListener('resize',()=>{ document.body.style.height=window.visualViewport.height+'px'; });
-}
-// Load voices
 window.speechSynthesis?.getVoices();
-// Show quick bar on init
-setTimeout(()=>updateQuickBar(), 100);
+if(window.visualViewport){window.visualViewport.addEventListener('resize',()=>{document.body.style.height=window.visualViewport.height+'px';});}
 </script>
 </body>
 </html>
