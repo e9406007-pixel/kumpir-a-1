@@ -93,7 +93,7 @@ header{height:54px;min-height:54px;display:flex;align-items:center;justify-conte
 .sbtn.active[data-s="planlama"]{border-left:3px solid var(--a3)}
 .sbtn.active[data-s="kodlama"]{border-left:3px solid var(--a2)}
 .sbtn.active[data-s="hizli"]{border-left:3px solid var(--a5)}
-.sbtn.active[data-s="gorsel"]{border-left:3px solid #f43f5e}
+.sbtn.active[data-s="spor"]{border-left:3px solid #4ade80}
 .sbtn.active[data-s="dil"]{border-left:3px solid #fbbf24}
 .sbtn.active[data-s="ayarlar"]{border-left:3px solid var(--text2)}
 .sicon{font-size:15px;width:18px;text-align:center;flex-shrink:0}
@@ -304,7 +304,7 @@ header{height:54px;min-height:54px;display:flex;align-items:center;justify-conte
     <button class="sbtn" data-s="planlama" onclick="sw(this)"><span class="sicon">🗂️</span>Planlı Düşünme</button>
     <button class="sbtn" data-s="kodlama" onclick="sw(this)"><span class="sicon">💻</span>Kodlama</button>
     <button class="sbtn" data-s="hizli" onclick="sw(this)"><span class="sicon">⚡</span>Hızlı Düşünme</button>
-    <button class="sbtn" data-s="gorsel" onclick="sw(this)"><span class="sicon">🎨</span>Görsel Oluştur</button>
+    <button class="sbtn" data-s="spor" onclick="sw(this)"><span class="sicon">⚽</span>Spor & Maçlar</button>
     <button class="sbtn" data-s="dil" onclick="sw(this)"><span class="sicon">🌍</span>Dil & Çeviri</button>
     <div class="slabel" style="margin-top:6px">Diğer</div>
     <button class="sbtn" data-s="ayarlar" onclick="sw(this)"><span class="sicon">⚙️</span>Ayarlar</button>
@@ -393,6 +393,7 @@ setInterval(rotatePhrases,3000);
 // ── CONFIG ──
 let CFG={theme:'dark',chatTheme:'default',style:'normal',tts:false,ttsVoice:'female',ttsRate:1,userName:''};
 try{const s=localStorage.getItem('kumpir_cfg');if(s)CFG={...CFG,...JSON.parse(s)};}catch(e){}
+const isFirstLogin=!localStorage.getItem('kumpir_cfg')||!JSON.parse(localStorage.getItem('kumpir_cfg')||'{}').userName;
 const saveCFG=()=>{try{localStorage.setItem('kumpir_cfg',JSON.stringify(CFG));}catch(e){}};
 
 // ── ONBOARDING ──
@@ -404,7 +405,7 @@ function startApp(){
   setTimeout(()=>{
     document.getElementById('onboard').style.display='none';
     document.getElementById('appShell').style.display='flex';
-    initApp();
+    isFirstLogin ? initAppFirst() : initApp();
   },500);
 }
 // Check if returning user
@@ -426,6 +427,35 @@ function initApp(){
   document.getElementById('uAvatar').textContent=n[0].toUpperCase();
   applyTheme();
   sw(document.querySelector('.sbtn.active'));
+  // Karşılama mesajı
+  setTimeout(()=>{
+    const msgs=document.getElementById('messages');
+    const d=document.createElement('div');
+    d.className='msg ai';
+    d.innerHTML=`<div class="avatar">🥔</div><div class="msg-inner"><div class="mname">Kumpir AI</div><div class="bubble">Merhaba <strong>${n}</strong>! 👋 Tekrar hoş geldin. Bugün sana nasıl yardımcı olabilirim?</div></div>`;
+    msgs.appendChild(d); msgs.scrollTop=99999;
+  },400);
+}
+
+function initAppFirst(){
+  const n=CFG.userName;
+  document.getElementById('uName').textContent=n;
+  document.getElementById('uAvatar').textContent=n[0].toUpperCase();
+  applyTheme();
+  sw(document.querySelector('.sbtn.active'));
+  // İlk karşılama
+  setTimeout(()=>{
+    const msgs=document.getElementById('messages');
+    const d=document.createElement('div');
+    d.className='msg ai';
+    d.style.animation='msgIn .4s cubic-bezier(.34,1.4,.64,1)';
+    d.innerHTML=`<div class="avatar">🥔</div><div class="msg-inner"><div class="mname">Kumpir AI</div><div class="bubble" style="background:linear-gradient(135deg,rgba(59,130,246,.15),rgba(167,139,250,.1));border-color:rgba(59,130,246,.3)">
+      <strong>Merhaba ${n}! 🎉</strong><br>
+      Ben Kumpir AI — her şeyi bilen, hiçbir şeyi gizlemeyen dijital dostun.<br><br>
+      Sol menüden istediğin bölümü seç ya da hemen soru sormaya başla. Seninle tanışmak harika! 🥔
+    </div></div>`;
+    msgs.appendChild(d); msgs.scrollTop=99999;
+  },600);
 }
 
 // ── THEMES ──
@@ -496,41 +526,63 @@ const STYLES={
   funny:  {name:'Eğlenceli',icon:'😂',desc:'Komik ve neşeli',p:'Kısa tut, mutlaka espri ekle. Neşeli ol.'},
 };
 
+// ── KUFUR ENGELI ──
+const KUFURLER=['mal','salak','aptal','gerize','geri zekalı','orospu','amk','sikeyim','siktir','oç','yarrak','göt','pezeveng','beyinsiz','ahmak','dangalak','piç','şerefsiz','namussuz'];
+let kusmeSon=0;
+function hakaret(text){const t=text.toLowerCase();return KUFURLER.some(k=>t.includes(k));}
+
 // ── SECTIONS ──
 const un=()=>CFG.userName||'arkadaş';
 const SECS={
   genel:{label:'🌐 Genel Sohbet',bg:'rgba(59,130,246,.1)',br:'rgba(59,130,246,.25)',c:'#60a5fa',
-    chips:()=>[`Selam ${un()}! Nasılsın?`,'Bana bir fıkra anlat','İlginç bir bilgi ver','Ne konuşalım?'],
-    sys:()=>`Sen Kumpir adında sıcakkanlı, espritüel ve akıllı bir yapay zeka asistanısın.
-Kullanıcının adı ${un()}. Ona her zaman "${un()}" diye hitap et.
-KURAL 1: SADECE TÜRKÇE konuş. Tek bir yabancı kelime bile kullanma.
-KURAL 2: Kim seni yaptı sorusunda: "Enes tarafından oluşturuldum." de. Başka mesajda bunu söyleme.
-KURAL 3: Gerçek bir arkadaş gibi sohbet et. Selam derlerse sıcakça karşılık ver.
+    chips:()=>['Selam! Nasılsın?','Bana bir fıkra anlat','İlginç bir bilgi ver','Ne konuşalım?'],
+    sys:()=>`Sen Kumpir adında sıcakkanlı, espritüel ve akıllı bir yapay zeka asistanısın. Kullanıcının adı ${un()}.
+ÖNEMLİ - İSİM KURALI: Kullanıcı adını sadece ilk karşılamada veya özel vurgu gerektiğinde kullan. Her cümlede isim kullanma — bu garip ve yapay durur. Normal arkadaşlar gibi doğal konuş.
+KURAL 1: SADECE TÜRKÇE konuş.
+KURAL 2: Kim seni yaptı sorusunda: "Enes tarafından oluşturuldum." de. Başka mesajda söyleme.
+KURAL 3: Gerçek bir arkadaş gibi akıcı sohbet et.
 KURAL 4: ${STYLES[CFG.style].p}`},
   matematik:{label:'🧮 Matematik',bg:'rgba(245,158,11,.1)',br:'rgba(245,158,11,.3)',c:'#f59e0b',
     chips:()=>['15 × 27 = ?','x² + 5x + 6 = 0','Dairenin alanı?','Türev nedir?'],
-    sys:()=>`Sen Kumpir'in Matematik bölümüsün. SADECE TÜRKÇE konuş. Kullanıcı adı: ${un()}.
+    sys:()=>`Sen Kumpir'in Matematik bölümüsün. SADECE TÜRKÇE konuş.
 Sadece matematik sorularına adım adım cevap ver. Matematik dışı: "Bu bölüm yalnızca matematik içindir." de.`},
   planlama:{label:'🗂️ Planlı Düşünme',bg:'rgba(52,211,153,.1)',br:'rgba(52,211,153,.25)',c:'#34d399',
     chips:()=>['Uygulama yapmak istiyorum','Sınava hazırlık planı','Kilo vermek istiyorum','İş kurma planı'],
-    sys:()=>`Sen Kumpir'in Planlama bölümüsün. SADECE TÜRKÇE. Kullanıcı adı: ${un()}.
+    sys:()=>`Sen Kumpir'in Planlama bölümüsün. SADECE TÜRKÇE.
 Hedef→aşamalar→adımlar→zaman→riskler şeklinde somut plan yap. ${STYLES[CFG.style].p}`},
   kodlama:{label:'💻 Kodlama',bg:'rgba(167,139,250,.1)',br:'rgba(167,139,250,.25)',c:'#a78bfa',
     chips:()=>['Python for döngüsü','Hata düzelt','React component','SQL JOIN'],
-    sys:()=>`Sen Kumpir'in Kodlama bölümüsün. Açıklamalar TÜRKÇE, kodlar İngilizce olabilir. Kullanıcı adı: ${un()}.
+    sys:()=>`Sen Kumpir'in Kodlama bölümüsün. Açıklamalar TÜRKÇE, kodlar İngilizce olabilir.
 Kod yaz, hataları düzelt, açıkla. Sadece kodlama konularında cevap ver.`},
   hizli:{label:'⚡ Hızlı Düşünme',bg:'rgba(244,114,182,.1)',br:'rgba(244,114,182,.25)',c:'#f472b6',
     chips:()=>['En büyük ülke?','Pi sayısı?','Türkiye nüfusu?','1 mil kaç km?'],
     sys:()=>`Sen Kumpir'in Hızlı Düşünme bölümüsün. SADECE TÜRKÇE. Maksimum 1-2 cümle. Giriş yok. Direkt cevap.`},
-  gorsel:{label:'🎨 Görsel Oluştur',bg:'rgba(244,63,94,.1)',br:'rgba(244,63,94,.25)',c:'#f43f5e',
-    chips:()=>['Araba fotoğrafı oluştur','Uzay manzarası yap','Kedi çizimi oluştur','Orman görseli'],
-    sys:()=>`Sen Kumpir'in Görsel bölümüsün. SADECE TÜRKÇE. Kullanıcı adı: ${un()}. Görsel isteklerine kısa samimi yanıt ver.`},
+  spor:{label:'⚽ Spor & Maçlar',bg:'rgba(52,211,153,.1)',br:'rgba(52,211,153,.25)',c:'#4ade80',
+    chips:()=>['Fenerbahçe Galatasaray 22/23 derbi sonucu','Şampiyonlar Ligi finali 2024','Ronaldo kariyer istatistikleri','NBA 2024 şampiyonu'],
+    sys:()=>`Sen Kumpir'in Spor bölümüsün. SADECE TÜRKÇE konuş. Spor konusunda çok detaylı bilgiye sahipsin.
+
+Bilgi alanların:
+- Maç sonuçları: Skor, goller (oyuncu adı, dakika, penaltı/frikik/düzlük), asistler, kırmızı/sarı kart
+- Tüm futbol ligleri: Süper Lig, Premier League, La Liga, Bundesliga, Serie A, Ligue 1, Şampiyonlar Ligi, UEFA Avrupa Ligi, Conference League, Dünya Kupası, Avrupa Şampiyonası
+- Türk futbolu: Fenerbahçe, Galatasaray, Beşiktaş, Trabzonspor ve diğer tüm Süper Lig takımları
+- Transfer haberleri: Bonservis bedelleri, hangi takıma gitti, sözleşme uzunluğu
+- Oyuncu bilgileri: Kariyer, gol istatistikleri, unvanlar, milli takım kariyeri
+- Basketbol: NBA, EuroLeague, FIBA, milli takım
+- Diğer sporlar: Tenis, Atletizm, Formula 1, Voleybol, Yüzme, Olimpiyatlar
+
+Maç sorularında bu formatı kullan:
+🏆 [Organizasyon / Lig adı]
+📅 [Tarih, Sezon/Aşama]
+⚽ [Takım1 SKOR - SKOR Takım2]
+🥅 Goller: [Oyuncu (dakika') - varsa asist eden]
+📊 Özet: [2-3 cümle maç özeti]
+
+Eğer bilgi kesim tarihinden sonraysa dürüstçe belirt. Bildiğin geçmiş maçları eksiksiz ver.`},
   dil:{label:'🌍 Dil & Çeviri',bg:'rgba(251,191,36,.1)',br:'rgba(251,191,36,.25)',c:'#fbbf24',
     chips:()=>['Merhaba\'yı İspanyolcaya çevir','İngilizce "hello" ne demek?','Fransızca nasıl öğrenirim?','Japonca merhaba?'],
-    sys:()=>`Sen Kumpir'in Dil ve Çeviri bölümüsün. Açıklamalar TÜRKÇE, çeviriler hedef dilde. Kullanıcı adı: ${un()}.
+    sys:()=>`Sen Kumpir'in Dil ve Çeviri bölümüsün. Açıklamalar TÜRKÇE, çeviriler hedef dilde.
 Kelimeleri/cümleleri çevir, dil bilgisi ver, telaffuz açıkla.`},
 };
-
 let cur='genel',hist={},loading=false,recog=null,listening=false,uploadedImg=null;
 Object.keys(SECS).forEach(s=>hist[s]=[]);
 
@@ -703,6 +755,41 @@ async function doSend(){
   const inp=document.getElementById('ibox');
   const text=inp.value.trim();
   if(!text&&!uploadedImg)return;
+
+  // Küsme kontrolü
+  if(hakaret(text)){
+    kusmeSon=Date.now();
+    inp.value=''; inp.style.height='auto';
+    document.getElementById('welcome')?.remove();
+    const msgs=document.getElementById('messages');
+    // Kullanıcı mesajı göster
+    const ud=document.createElement('div');
+    ud.className='msg user';
+    const initials=(CFG.userName||'K')[0].toUpperCase();
+    ud.innerHTML=`<div class="avatar">${initials}</div><div class="msg-inner"><div class="mname" style="color:var(--text3)">${CFG.userName||'Sen'}</div><div class="bubble">${esc(text)}</div></div>`;
+    msgs.appendChild(ud); msgs.scrollTop=99999;
+    // Küsme mesajı
+    const kd=document.createElement('div');
+    kd.className='msg ai';
+    kd.innerHTML=`<div class="avatar">🥔</div><div class="msg-inner"><div class="mname">Kumpir AI</div><div class="bubble" style="background:rgba(239,68,68,.1);border-color:rgba(239,68,68,.2)">😤 Bu tür konuşmayı uygun bulmuyorum. 5 dakika boyunca cevap vermeyeceğim. Lütfen saygılı konuş.</div></div>`;
+    msgs.appendChild(kd); msgs.scrollTop=99999;
+    return;
+  }
+
+  // 5 dakika küsme süresi kontrolü
+  if(kusmeSon && (Date.now()-kusmeSon) < 5*60*1000){
+    const kalanSn=Math.ceil((5*60*1000-(Date.now()-kusmeSon))/1000);
+    const kalanDk=Math.floor(kalanSn/60);
+    const kalanS=kalanSn%60;
+    inp.value=''; inp.style.height='auto';
+    const msgs=document.getElementById('messages');
+    const kd=document.createElement('div');
+    kd.className='msg ai';
+    kd.innerHTML=`<div class="avatar">🥔</div><div class="msg-inner"><div class="mname">Kumpir AI</div><div class="bubble" style="background:rgba(239,68,68,.08);border-color:rgba(239,68,68,.15)">😤 Hâlâ küsüğüm. ${kalanDk > 0 ? kalanDk+'dk ' : ''}${kalanS}sn sonra konuşabiliriz.</div></div>`;
+    msgs.appendChild(kd); msgs.scrollTop=99999;
+    return;
+  }
+  if(kusmeSon && (Date.now()-kusmeSon) >= 5*60*1000) kusmeSon=0;
 
   inp.value='';inp.style.height='auto';
   loading=true;
